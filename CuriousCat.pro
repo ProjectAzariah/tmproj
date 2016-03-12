@@ -17,12 +17,17 @@ SOURCES += main.cpp\
     danger.cpp \
     gamemodel.cpp \
     background.cpp \
-    event.cpp
+    event.cpp \
+    object.cpp
 
 HEADERS  += mainwindow.h \
     danger.h \
     gamemodel.h \
     background.h \
-    event.h
+    event.h \
+    object.h
 
 FORMS    += mainwindow.ui
+
+RESOURCES += \
+    Images/resources.qrc

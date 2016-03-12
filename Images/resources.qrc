@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>cat.gif</file>
+        <file>dog.gif</file>
+        <file>duck.png</file>
+        <file>fireball2.0.png</file>
+        <file>Ground_(front_layer).png</file>
+        <file>lawnmower2.png</file>
+        <file>Sky_back_layer.png</file>
+        <file>Vegetation_(middle_layer).png</file>
+    </qresource>
+</RCC>
