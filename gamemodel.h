@@ -3,7 +3,8 @@
 
 
 
-class loadnsave {
+class object {
+public:
     virtual void saveGame();
     virtual void loadGame();
 };
