@@ -4,6 +4,9 @@
 #include <QLabel>
 #include <QTimer>
 #include <QMovie>
+#include <QFile>
+#include <QTextStream>
+
 #include "object.h"
 
 class MovingBackground
@@ -27,61 +30,129 @@ public:
 class CuriousCat : Object
 {
 private:
-    QLabel * cat;
+    //QLabel * cat;
     QMovie * catMovie;
 public:
     explicit CuriousCat(QWidget *parent)
     {
         catMovie = new QMovie(":/cat.gif");
-        cat = new QLabel(parent);
-        cat->setMovie(catMovie);
+        label = new QLabel(parent);
+        label->setMovie(catMovie);
         catMovie->start();
-        cat->setGeometry(50,176, 75, 75);
-        cat->setScaledContents(true);
+        label->setGeometry(50,176, 75, 75);
+        label->setScaledContents(true);
 
-        cat->show();
+        label->show();
     }
 
+   /* //saves a game object
+    void saveGame() {
+        QFile data("data.txt");
+        if(data.open(QIODevice::ReadWrite)){
+            QTextStream out(&data);
 
+            out << label->x() << "\n";
+            out << label->y() << "\n";
+        }
+    }
 
+    //loads a game object
+    void loadGame() {
+        QFile data("data.txt");
+        if(data.open(QIODevice::ReadWrite)){
+                QString str = data.readLine();
+                int catx = str.toInt();
+                QString str2 = data.readLine();
+                int caty = str2.toInt();
 
+                label->setGeometry(catx, caty, 75, 75);
+        }
+    }*/
 };
 
 class MadDog : Object
 {
 private:
-    QLabel * dog;
+    //QLabel * dog;
     QMovie * dogMovie;
 public:
     explicit MadDog(QWidget *parent)
     {
         dogMovie = new QMovie(":/dog.gif");
-        dog = new QLabel(parent);
-        dog->setMovie(dogMovie);
+        label = new QLabel(parent);
+        label->setMovie(dogMovie);
         dogMovie->start();
-        dog->setGeometry(250,177, 75, 75);
-        dog->setScaledContents(true);
+        label->setGeometry(250,177, 75, 75);
+        label->setScaledContents(true);
 
-        dog->show();
+        label->show();
 
     }
+
+    //saves a game object
+    /*void saveGame() {
+        QFile data("data.txt");
+        if(data.open(QIODevice::ReadWrite)){
+            QTextStream out(&data);
+
+            out << label->x() << "\n";
+            out << label->y() << "\n";
+        }
+    }
+
+    //loads a game object
+    void loadGame() {
+        QFile data("data.txt");
+        if(data.open(QIODevice::ReadWrite)){
+                QString str = data.readLine();
+                int x = str.toInt();
+                QString str2 = data.readLine();
+                int y = str2.toInt();
+
+                label->setGeometry(x, y, 75, 75);
+        }
+    }*/
 };
 
 class LawnMower : Object
 {
 private:
-    QLabel * mower;
+    //QLabel * mower;
 public:
     explicit LawnMower(QWidget * parent)
     {
         QPixmap mowerPic(":/lawnmower2.png");
-        mower = new QLabel(parent);
-        mower->setPixmap(mowerPic);
-        mower->setGeometry(350, 198, 50,50);
-        mower->setScaledContents(true);
-        mower->show();
+        label = new QLabel(parent);
+        label->setPixmap(mowerPic);
+        label->setGeometry(350, 198, 50,50);
+        label->setScaledContents(true);
+        label->show();
 
     }
+
+    //saves a game object
+    /*void saveGame() {
+        QFile data("data.txt");
+        if(data.open(QIODevice::ReadWrite)){
+            QTextStream out(&data);
+
+            out << label->x() << "\n";
+            out << label->y() << "\n";
+        }
+    }
+
+    //loads a game object
+    void loadGame() {
+        QFile data("data.txt");
+        if(data.open(QIODevice::ReadWrite)){
+                QString str = data.readLine();
+                int x = str.toInt();
+                QString str2 = data.readLine();
+                int y = str2.toInt();
+
+                label->setGeometry(x, y, 50, 50);
+        }
+    }*/
 };
 
 

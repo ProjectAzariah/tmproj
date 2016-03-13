@@ -17,8 +17,7 @@ SOURCES += main.cpp\
     danger.cpp \
     gamemodel.cpp \
     background.cpp \
-    event.cpp \
-    object.cpp
+    event.cpp
 
 HEADERS  += mainwindow.h \
     danger.h \
