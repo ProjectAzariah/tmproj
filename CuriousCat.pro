@@ -18,14 +18,15 @@ SOURCES += main.cpp\
     gamemodel.cpp \
     background.cpp \
     event.cpp \
-    object.cpp
+    highscore.cpp
 
 HEADERS  += mainwindow.h \
     danger.h \
     gamemodel.h \
     background.h \
     event.h \
-    object.h
+    object.h \
+    highscore.h
 
 FORMS    += mainwindow.ui
 
