@@ -8,5 +8,7 @@
         <file>lawnmower2.png</file>
         <file>Sky_back_layer.png</file>
         <file>Vegetation_(middle_layer).png</file>
+        <file>furball2.png</file>
+        <file>hole.png</file>
     </qresource>
 </RCC>
