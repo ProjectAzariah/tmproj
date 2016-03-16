@@ -1,7 +1,6 @@
 #include "background.h"
 #include "mainwindow.h"
 #include <QWidget>
-#include <QVBoxLayout>
 
 
 MovingBackground::MovingBackground(QWidget *parent)
@@ -57,8 +56,12 @@ MovingBackground::MovingBackground(QWidget *parent)
 
 
 
-
 }
+
+
+
+
+
 
 
 

@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     gamemodel.cpp \
     background.cpp \
     event.cpp \
-    highscore.cpp
+    highscore.cpp \
+    object.cpp
 
 HEADERS  += mainwindow.h \
     danger.h \
@@ -32,3 +33,5 @@ FORMS    += mainwindow.ui
 
 RESOURCES += \
     Images/resources.qrc
+QMAKE_CXXFLAGS += -std=c++0x
+
