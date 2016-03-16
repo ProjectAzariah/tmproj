@@ -1,6 +1,7 @@
 #include <QKeyEvent>
 #include <QRect>
 #include <vector>
+#include <QString>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -32,23 +33,23 @@ MainWindow::MainWindow(QWidget *parent) :
     frontTimer->start();
 
     //obstacle timers
-    obstacleTimer = new QTimer(this);
-    obstacleTimer->setInterval(10);
-    connect(obstacleTimer, SIGNAL(timeout()), this, SLOT(obstacleTimerHit()));
-    obstacleTimer->start();
+    //obstacleTimer = new QTimer(this);
+    //obstacleTimer->setInterval(10);
+    //connect(obstacleTimer, SIGNAL(timeout()), this, SLOT(obstacleTimerHit()));
+    //obstacleTimer->start();
 
     //spawining timers
-    spawningTimer = new QTimer(this);
-    spawningTimer->setInterval(1750);
-    connect(spawningTimer, SIGNAL(timeout()), this, SLOT(spawningTimerHit()));
-    spawningTimer->start();
+    //spawningTimer = new QTimer(this);
+    //spawningTimer->setInterval(1750);
+    //connect(spawningTimer, SIGNAL(timeout()), this, SLOT(spawningTimerHit()));
+    //spawningTimer->start();
 
     //furballtimer
     furtime = new QTimer(this);
     furtime->setInterval(10);
     connect(furtime, SIGNAL(timeout()), this, SLOT(furTimeHit()));
 
-    Obstacle& o = Obstacle::instance();
+    //Obstacle& o = Obstacle::instance();
 /*
     o.obstacleTimer = new QTimer(this);
     o.obstacleTimer->setInterval(10);
@@ -56,10 +57,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 */
     cCat =  new CuriousCat(this);
-    MadDog();
-    LawnMower();
-    Hole();
-    o.spawnObstacles(this);
+    //MadDog();
+    //LawnMower();
+    //Hole();
     //o.spawnObstacles(this);
 }
 
@@ -141,8 +141,8 @@ void MainWindow::frontTimerHit()
         mb->frontLabel->move(mb->frontLabel->x() - 1, mb->frontLabel->y());
         mb->frontLabel2->show();
     }
-
-
+    if (mb->startBtn->isChecked())score+=2;
+    mb->scoreLabel->setText("Score: "+ QString::number(score));
 }
 
 void MainWindow::on_startBtn_clicked(){
@@ -150,6 +150,25 @@ void MainWindow::on_startBtn_clicked(){
     mb->startBtn->hide();
 
     mb->introLabel->hide();
+
+    mb->quitBtn->show();
+
+    obstacleTimer = new QTimer(this);
+    obstacleTimer->setInterval(10);
+    connect(obstacleTimer, SIGNAL(timeout()), this, SLOT(obstacleTimerHit()));
+    obstacleTimer->start();
+
+    spawningTimer = new QTimer(this);
+    spawningTimer->setInterval(1750);
+    connect(spawningTimer, SIGNAL(timeout()), this, SLOT(spawningTimerHit()));
+    spawningTimer->start();
+
+    Obstacle& o = Obstacle::instance();
+
+    MadDog();
+    LawnMower();
+    Hole();
+    o.spawnObstacles(this);
 }
 
 void MainWindow::obstacleTimerHit()
@@ -279,7 +298,13 @@ void MainWindow::furTimeHit()
 
         }*/
     }
+}
 
+void MainWindow::on_quitBtn_clicked(){
+    mb->healthLabel->hide();
+    mb->scoreLabel->hide();
+    obstacleTimer->stop();
+    spawningTimer->stop();
 
 }
 

@@ -22,6 +22,8 @@ public:
     CuriousCat * cCat;
     QLabel * furBall;
     std::vector<QLabel*> furBalls;
+    int score = 0;
+    int health = 100;
 
     //background timers
     QTimer * backTimer;
@@ -33,6 +35,7 @@ public:
 
 public slots:
     void on_startBtn_clicked();
+    void on_quitBtn_clicked();
     void backTimerHit();
     void midTimerHit();
     void frontTimerHit();

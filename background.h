@@ -27,6 +27,9 @@ public:
     QLabel * frontLabel2;
     QTextEdit * introLabel;
     QPushButton * startBtn;
+    QLabel* scoreLabel;
+    QLabel* healthLabel;
+    QPushButton * quitBtn;
 
 
 

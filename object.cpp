@@ -34,6 +34,7 @@ MadDog::MadDog()
     setW(75);
     setH(75);
     setType("MadDog");
+    setHealthImpact(50);
     /*dogMovie = new QMovie(":/dog.gif");
     dog = new QLabel(parent);
     dog->setMovie(dogMovie);
@@ -74,6 +75,7 @@ LawnMower::LawnMower()
     setW(50);
     setH(50);
     setType("LawnMower");
+    setHealthImpact(25);
     /*QPixmap mowerPic(":/lawnmower2.png");
     mower = new QLabel(parent);
     mower->setPixmap(mowerPic);
@@ -95,6 +97,7 @@ Hole::Hole()
     setW(75);
     setH(300);
     setType("Hole");
+    setHealthImpact(100);
     /*QPixmap holePic(":/hole.png");
     hole = new QLabel(parent);
     hole->setPixmap(holePic);

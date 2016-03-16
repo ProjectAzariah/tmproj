@@ -62,6 +62,21 @@ MovingBackground::MovingBackground(QWidget *parent)
     logoLabel->setScaledContents(true);
     logoLabel->show();
 
+    //score label
+    scoreLabel = new QLabel(parent);
+    scoreLabel->setText("Score: 0");
+    scoreLabel->setGeometry(330,0,50,30);
+    scoreLabel->setScaledContents(true);
+    scoreLabel->show();
+
+    //health label
+    //eventually change to number of hearts
+    healthLabel = new QLabel(parent);
+    healthLabel->setText("Health: 100%");
+    healthLabel->setGeometry(10,0,80,30);
+    healthLabel->setScaledContents(true);
+    healthLabel->show();
+
     //makes intro box
     introLabel = new QTextEdit(parent);
     introLabel->setText("Corben the Curious Cat's curiousity has finally gotten the best of him and he has decided to go explore the dangerous outdoors. Help him avoid potential death by making him jump('W') to avoid the harmful dogs and lawnmowers and deadly holes. click START(alt + S) to begin!");
@@ -77,6 +92,11 @@ MovingBackground::MovingBackground(QWidget *parent)
     startBtn->setGeometry(150,190,100, 45);
     startBtn->setIconSize(start.rect().size());
     startBtn->show();
+
+    //makes start button
+    quitBtn = new QPushButton(parent);
+    quitBtn->setText("&Quit");
+    quitBtn->setGeometry(160,260,80, 30);
 }
 
 

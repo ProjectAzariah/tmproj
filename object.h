@@ -11,10 +11,8 @@ class Object : public QObject
     Q_OBJECT
 
 private:
-    int x;
-    int y;
-    int h;
-    int w;
+    int x, y, h, w;
+    int healthimpact;
     std::string type;
     bool isActive();
 
@@ -36,6 +34,8 @@ public:
     std::string getType()
     {return type;}
     void setType(std::string newType) {type = newType;}
+    void setHealthImpact(int h){healthimpact = h;}
+    int getHealthImpact(){return healthimpact;}
     //static QLabel *objectSpawner(QWidget * parent);
     //static std::vector<QLabel*> objects;
     //static std::vector<Object> spawnedObjects;
