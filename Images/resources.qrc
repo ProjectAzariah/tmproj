@@ -10,5 +10,12 @@
         <file>Vegetation_(middle_layer).png</file>
         <file>furball2.png</file>
         <file>hole.png</file>
+        <file>cheat.png</file>
+        <file>heart.png</file>
+        <file>load.png</file>
+        <file>logo.png</file>
+        <file>save.png</file>
+        <file>start.png</file>
+        <file>playagain.png</file>
     </qresource>
 </RCC>

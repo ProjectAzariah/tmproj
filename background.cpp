@@ -1,6 +1,7 @@
 #include "background.h"
 #include "mainwindow.h"
 #include <QWidget>
+#include <QString>
 
 
 MovingBackground::MovingBackground(QWidget *parent)
@@ -54,8 +55,65 @@ MovingBackground::MovingBackground(QWidget *parent)
     frontLabel2->setScaledContents(true);
     frontLabel2->show();
 
+    //makes Game Logo
+    QPixmap logo(":/logo.png");
+    logoLabel = new QLabel(parent);
+    logoLabel->setPixmap(logo);
+    logoLabel->setGeometry(100,0,200,30);
+    logoLabel->setScaledContents(true);
+    logoLabel->show();
 
+    //score label
+    scoreLabel = new QLabel(parent);
+    scoreLabel->setText("Score: 0");
+    scoreLabel->setGeometry(330,0,50,30);
+    scoreLabel->setScaledContents(true);
+    scoreLabel->show();
 
+    //health label
+    //eventually change to number of hearts
+    healthLabel = new QLabel(parent);
+    healthLabel->setText("Health: 100%");
+    healthLabel->setGeometry(10,0,80,30);
+    healthLabel->setScaledContents(true);
+    healthLabel->show();
+
+    //makes intro box
+    introLabel = new QTextEdit(parent);
+    introLabel->setText("Corben the Curious Cat's curiousity has finally gotten the best of him and he has decided to go explore the dangerous outdoors. Help him avoid potential death by making him jump('W') to avoid the harmful dogs and lawnmowers and deadly holes. click START(alt + S) to begin!");
+    introLabel->setGeometry(80,30,240,150);
+    introLabel->setDisabled(true);
+    introLabel->show();
+
+    //makes start button
+    QPixmap start(":/start.png");
+    startBtn = new QPushButton(parent);    
+    QIcon ButtonIcon(start);
+    startBtn->setIcon(ButtonIcon);
+    startBtn->setGeometry(150,190,100, 45);
+    startBtn->setIconSize(start.rect().size());
+    startBtn->show();
+
+    //makes quit button
+    quitBtn = new QPushButton(parent);
+    quitBtn->setText("&Quit");
+    quitBtn->setGeometry(160,260,80, 30);
+    quitBtn->hide();
+
+    //makes endScreen
+    endScreen = new QTextEdit(parent);
+    endScreen->setGeometry(80,40,240,150);
+    endScreen->setDisabled(true);
+    endScreen->hide();
+
+    //play again button
+    QPixmap playAgain(":/playagain.png");
+    playAgainBtn = new QPushButton(parent);
+    QIcon ButtonTwoIcon(playAgain);
+    playAgainBtn->setIcon(ButtonTwoIcon);
+    playAgainBtn->setGeometry(130,120,150, 45);
+    playAgainBtn->setIconSize(start.rect().size());
+    playAgainBtn->hide();
 }
 
 
