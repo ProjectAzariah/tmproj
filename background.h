@@ -30,6 +30,8 @@ public:
     QLabel* scoreLabel;
     QLabel* healthLabel;
     QPushButton * quitBtn;
+    QTextEdit * endScreen;
+    QPushButton * playAgainBtn;
 
 
 

@@ -2,19 +2,25 @@
 #include <QRect>
 #include <vector>
 #include <QString>
+#include <QObject>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "background.h"
 #include "event.h"
 
-
+int MainWindow::score = 0;
+int MainWindow::health = 100;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     mb = new MovingBackground(this);
+
+    connect(mb->startBtn, SIGNAL(clicked()), SLOT(on_startBtn_clicked()));
+    connect(mb->quitBtn, SIGNAL(clicked()), SLOT(on_quitBtn_clicked()));
+
     //background timers
     backTimer = new QTimer(parent);
     backTimer->setInterval(70);
@@ -141,11 +147,10 @@ void MainWindow::frontTimerHit()
         mb->frontLabel->move(mb->frontLabel->x() - 1, mb->frontLabel->y());
         mb->frontLabel2->show();
     }
-    if (mb->startBtn->isChecked())score+=2;
-    mb->scoreLabel->setText("Score: "+ QString::number(score));
 }
 
 void MainWindow::on_startBtn_clicked(){
+    started=true;
     mb->startBtn->setDisabled(true);
     mb->startBtn->hide();
 
@@ -195,6 +200,11 @@ void MainWindow::spawningTimerHit()
     obstacleTimer->start();
     //label->move(0, label->y());
     this->obstacleTimerHit();
+
+    if (started){
+        score+=2;
+    }
+    mb->scoreLabel->setText("Score: "+ QString::number(score));
 }
 
 void MainWindow::keyPressEvent(QKeyEvent* event) {
@@ -303,8 +313,22 @@ void MainWindow::furTimeHit()
 void MainWindow::on_quitBtn_clicked(){
     mb->healthLabel->hide();
     mb->scoreLabel->hide();
+    mb->quitBtn->hide();
+    mb->endScreen->show();
+    mb->playAgainBtn->show();
     obstacleTimer->stop();
     spawningTimer->stop();
+    backTimer->stop();
+    midTimer->stop();
+    frontTimer->stop();
+    obstacleTimer->stop();
+    spawningTimer->stop();
+    //furTimer->stop();
+
+    cCat->cat->hide();
+    for(int i = 0; i < Obstacle::instance().obstacles.size(); i++){
+        Obstacle::instance().obstacles[i]->hide();
+    }
 
 }
 

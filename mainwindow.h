@@ -22,8 +22,8 @@ public:
     CuriousCat * cCat;
     QLabel * furBall;
     std::vector<QLabel*> furBalls;
-    int score = 0;
-    int health = 100;
+    static int score, health ;
+    bool started = false;
 
     //background timers
     QTimer * backTimer;

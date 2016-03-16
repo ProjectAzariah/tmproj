@@ -1,6 +1,7 @@
 #include "background.h"
 #include "mainwindow.h"
 #include <QWidget>
+#include <QString>
 
 
 MovingBackground::MovingBackground(QWidget *parent)
@@ -93,10 +94,28 @@ MovingBackground::MovingBackground(QWidget *parent)
     startBtn->setIconSize(start.rect().size());
     startBtn->show();
 
-    //makes start button
+    //makes quit button
     quitBtn = new QPushButton(parent);
     quitBtn->setText("&Quit");
     quitBtn->setGeometry(160,260,80, 30);
+    quitBtn->hide();
+
+    //makes endScreen
+    endScreen = new QTextEdit(parent);
+    endScreen->setText("Top Scores: ------\n                ------\n                 ------\nYour Score:" + QString::number(MainWindow::score));
+    endScreen->setGeometry(80,40,240,150);
+    endScreen->setDisabled(true);
+    endScreen->hide();
+
+    //play again button
+    //QPixmap playAgain(":/playagain.png");
+    playAgainBtn = new QPushButton(parent);
+    //QIcon ButtonIcon(start);
+    //playAgainBtn->setIcon(ButtonIcon);
+    playAgainBtn->setText("Play Again");
+    playAgainBtn->setGeometry(100,120,200, 45);
+    //playAgainBtn->setIconSize(start.rect().size());
+    playAgainBtn->hide();
 }
 
 
