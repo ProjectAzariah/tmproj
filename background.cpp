@@ -102,19 +102,17 @@ MovingBackground::MovingBackground(QWidget *parent)
 
     //makes endScreen
     endScreen = new QTextEdit(parent);
-    endScreen->setText("Top Scores: ------\n                ------\n                 ------\nYour Score:" + QString::number(MainWindow::score));
     endScreen->setGeometry(80,40,240,150);
     endScreen->setDisabled(true);
     endScreen->hide();
 
     //play again button
-    //QPixmap playAgain(":/playagain.png");
+    QPixmap playAgain(":/playagain.png");
     playAgainBtn = new QPushButton(parent);
-    //QIcon ButtonIcon(start);
-    //playAgainBtn->setIcon(ButtonIcon);
-    playAgainBtn->setText("Play Again");
-    playAgainBtn->setGeometry(100,120,200, 45);
-    //playAgainBtn->setIconSize(start.rect().size());
+    QIcon ButtonTwoIcon(playAgain);
+    playAgainBtn->setIcon(ButtonTwoIcon);
+    playAgainBtn->setGeometry(130,120,150, 45);
+    playAgainBtn->setIconSize(start.rect().size());
     playAgainBtn->hide();
 }
 

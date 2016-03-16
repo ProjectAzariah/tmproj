@@ -16,5 +16,6 @@
         <file>logo.png</file>
         <file>save.png</file>
         <file>start.png</file>
+        <file>playagain.png</file>
     </qresource>
 </RCC>

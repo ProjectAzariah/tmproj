@@ -38,37 +38,14 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(frontTimer, SIGNAL(timeout()), this, SLOT(frontTimerHit()));
     frontTimer->start();
 
-    //obstacle timers
-    //obstacleTimer = new QTimer(this);
-    //obstacleTimer->setInterval(10);
-    //connect(obstacleTimer, SIGNAL(timeout()), this, SLOT(obstacleTimerHit()));
-    //obstacleTimer->start();
-
-    //spawining timers
-    //spawningTimer = new QTimer(this);
-    //spawningTimer->setInterval(1750);
-    //connect(spawningTimer, SIGNAL(timeout()), this, SLOT(spawningTimerHit()));
-    //spawningTimer->start();
 
     //furballtimer
     furtime = new QTimer(this);
     furtime->setInterval(10);
     connect(furtime, SIGNAL(timeout()), this, SLOT(furTimeHit()));
 
-    //Obstacle& o = Obstacle::instance();
-/*
-    o.obstacleTimer = new QTimer(this);
-    o.obstacleTimer->setInterval(10);
-    connect(o.obstacleTimer, SIGNAL(timeout()), this, SLOT(enemyTimerHit()));
-
-*/
     cCat =  new CuriousCat(this);
-    //MadDog();
-    //LawnMower();
-    //Hole();
-    //o.spawnObstacles(this);
 }
-
 
 MainWindow::~MainWindow()
 {
@@ -147,6 +124,7 @@ void MainWindow::frontTimerHit()
         mb->frontLabel->move(mb->frontLabel->x() - 1, mb->frontLabel->y());
         mb->frontLabel2->show();
     }
+
 }
 
 void MainWindow::on_startBtn_clicked(){
@@ -314,7 +292,8 @@ void MainWindow::on_quitBtn_clicked(){
     mb->healthLabel->hide();
     mb->scoreLabel->hide();
     mb->quitBtn->hide();
-    mb->endScreen->show();
+    mb->endScreen->show();    
+    mb->endScreen->setText("Top Scores: ------\n                ------\n                 ------\nYour Score:" + mb->scoreLabel->text());
     mb->playAgainBtn->show();
     obstacleTimer->stop();
     spawningTimer->stop();
