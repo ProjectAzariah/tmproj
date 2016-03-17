@@ -1,4 +1,4 @@
-#include <QKeyEvent>
+﻿#include <QKeyEvent>
 #include <QRect>
 #include <vector>
 #include <QString>
@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(mb->startBtn, SIGNAL(clicked()), SLOT(on_startBtn_clicked()));
     connect(mb->quitBtn, SIGNAL(clicked()), SLOT(on_quitBtn_clicked()));
+    connect(mb->playAgainBtn, SIGNAL(clicked()), SLOT(on_playAgainBtn_clicked()));
 
     //background timers
     backTimer = new QTimer(parent);
@@ -309,6 +310,22 @@ void MainWindow::on_quitBtn_clicked(){
         Obstacle::instance().obstacles[i]->hide();
     }
 
+}
+
+void MainWindow::on_playAgainBtn_clicked(){
+    health=100;
+    score=0;
+    mb->endScreen->hide();
+    mb->playAgainBtn->hide();
+    mb->scoreLabel->setText("Score: " + QString::number(score));
+    mb->scoreLabel->show();
+    mb->healthLabel->show();
+    mb->quitBtn->show();
+    cCat->cat->show();
+    backTimer->start();
+    midTimer->start();
+    frontTimer->start();
+    on_startBtn_clicked();
 }
 
 

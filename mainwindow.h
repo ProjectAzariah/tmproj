@@ -36,6 +36,7 @@ public:
 public slots:
     void on_startBtn_clicked();
     void on_quitBtn_clicked();
+    void on_playAgainBtn_clicked();
     void backTimerHit();
     void midTimerHit();
     void frontTimerHit();
