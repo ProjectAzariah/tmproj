@@ -66,7 +66,7 @@ MovingBackground::MovingBackground(QWidget *parent)
     //score label
     scoreLabel = new QLabel(parent);
     scoreLabel->setText("Score: 0");
-    scoreLabel->setGeometry(330,0,50,30);
+    scoreLabel->setGeometry(310,0,80,30);
     scoreLabel->setScaledContents(true);
     scoreLabel->show();
 
@@ -80,7 +80,7 @@ MovingBackground::MovingBackground(QWidget *parent)
 
     //makes intro box
     introLabel = new QTextEdit(parent);
-    introLabel->setText("Corben the Curious Cat's curiousity has finally gotten the best of him and he has decided to go explore the dangerous outdoors. Help him avoid potential death by making him jump('W') to avoid the harmful dogs and lawnmowers and deadly holes. click START(alt + S) to begin!");
+    introLabel->setText("Corben the Curious Cat's curiousity has finally gotten the best of him and he has decided to go explore the dangerous outdoors. Help him avoid potential death by making him jump('W') to avoid the harmful dogs and lawnmowers and deadly holes. click START to begin!");
     introLabel->setGeometry(80,30,240,150);
     introLabel->setDisabled(true);
     introLabel->show();
@@ -111,7 +111,7 @@ MovingBackground::MovingBackground(QWidget *parent)
     playAgainBtn = new QPushButton(parent);
     QIcon ButtonTwoIcon(playAgain);
     playAgainBtn->setIcon(ButtonTwoIcon);
-    playAgainBtn->setGeometry(130,120,150, 45);
+    playAgainBtn->setGeometry(130,130,150, 45);
     playAgainBtn->setIconSize(start.rect().size());
     playAgainBtn->hide();
 }
