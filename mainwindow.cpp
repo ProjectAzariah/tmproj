@@ -44,6 +44,16 @@ MainWindow::MainWindow(QWidget *parent) :
     furtime = new QTimer(this);
     furtime->setInterval(10);
     connect(furtime, SIGNAL(timeout()), this, SLOT(furTimeHit()));
+    hurtTimer = new QTimer(this);
+
+    //hurtTimer
+    hurtTimer->setInterval(100);
+    connect(hurtTimer, SIGNAL(timeout()),this,SLOT(hurtTimerHit()));
+
+    //jumpTimer
+    jumpTimer = new QTimer(this);
+    jumpTimer->setInterval(5);
+    connect(jumpTimer, SIGNAL(timeout()), this, SLOT(jumpTimerHit()));
 
     cCat =  new CuriousCat(this);
 }
@@ -154,6 +164,7 @@ void MainWindow::on_startBtn_clicked(){
     Hole();
     o.spawnObstacles(this);
 }
+//ATTENTION: THIS IS WHERE I PUT THE CODE FOR THE GAME TO STOP WHEN THE CAT RUNS INTO
 
 void MainWindow::obstacleTimerHit()
 {
@@ -162,10 +173,48 @@ void MainWindow::obstacleTimerHit()
     for (unsigned int i = 0; i < o.spawnedObstacles.size(); i++)
     {
         QLabel * obst = new QLabel;
+        Object * obj = new Object;
         obst = o.spawnedObstacles[i];
+        obj = o.objects[i];
         obst->move(obst->x() - 1, obst->y());
+        if (obst->geometry().intersects(cCat->cat->geometry()))
+        {
+            cCat->health = cCat->health - obj->getHealthImpact();
+            if (cCat->health <= 0)
+            {
+                end = new QLabel(this);
+                end->setText("YOU LOSE");
+                end->showFullScreen();
+                end->setGeometry(cCat->cat->x(),cCat->cat->y() - 75, 100,100);
+                end->setScaledContents(true);
+                end->show();
+                backTimer->stop();
+                midTimer->stop();
+                frontTimer->stop();
+                obstacleTimer->stop();
+                spawningTimer->stop();
+                cCat->catMovie->stop();
+            }
+            else
+            {
+                hurtTimer->start();
+            }
+
+        }
     }
 
+}
+
+void MainWindow::hurtTimerHit()
+{
+    if (cCat->cat->isVisible())
+    {
+        cCat->cat->hide();
+    }
+    else
+    {
+        cCat->cat->show();
+    }
 }
 
 void MainWindow::spawningTimerHit()
@@ -186,16 +235,50 @@ void MainWindow::spawningTimerHit()
     mb->scoreLabel->setText("Score: "+ QString::number(score));
 }
 
+void MainWindow::jumpTimerHit()
+{
+    if (cCat->gravity < 100)
+    {
+        cCat->gravity += 1;
+        cCat->cat->move(cCat->cat->x(),cCat->cat->y() - 1);
+        if (cCat->gravity == 100)
+        {
+            jumpTimer->setInterval(1000);
+        }
+    }
+
+    else if (cCat->gravity >= 100)
+    {
+        jumpTimer->setInterval(5);
+        //cCat->cat->move(cCat->cat->x(), cCat->cat->y() + 76);
+        //cCat->gravity -= 1;
+        if (cCat->cat->y() != 176)
+        {
+            cCat->cat->move(cCat->cat->x(),cCat->cat->y() + 1);
+
+        }
+        else
+        {
+            cCat->gravity = 0;
+            jumpTimer->stop();
+        }
+
+    }
+}
+
 void MainWindow::keyPressEvent(QKeyEvent* event) {
     //qDebug() << event->key();   //uncomment this line if you want to figure out what key number a key is for the case in the
     switch(event->key())
     {
     case 87:
 
+        jumpTimer->start();
+
+        //cCat->cat->move(cCat->cat->x(), cCat->cat->y() - 76);
+        //cCat->catMovie->stop();
 
 
-        cCat->cat->move(cCat->cat->x(), cCat->cat->y() - 76);
-        cCat->catMovie->stop();
+
         break;
     case 68:
         furBall = new QLabel(this);
@@ -224,8 +307,11 @@ void MainWindow::keyReleaseEvent(QKeyEvent * event)
     switch(event->key())
     {
     case 87:
-        cCat->cat->move(cCat->cat->x(), cCat->cat->y() + 76);
-        cCat->catMovie->start();
+       // jumpTimer->stop();
+        //cCat->cat->move(cCat->cat->x(), cCat->cat->y() + 76);
+        //wcCat->catMovie->start();
+
+
         break;
     case 68:
         break;
@@ -293,7 +379,7 @@ void MainWindow::on_quitBtn_clicked(){
     mb->healthLabel->hide();
     mb->scoreLabel->hide();
     mb->quitBtn->hide();
-    mb->endScreen->show();    
+    mb->endScreen->show();
     mb->endScreen->setText("Top Scores: ------\n                ------\n                 ------\nYour Score:" + mb->scoreLabel->text());
     mb->playAgainBtn->show();
     obstacleTimer->stop();
