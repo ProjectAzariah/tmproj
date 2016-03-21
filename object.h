@@ -15,6 +15,9 @@ private:
     int healthimpact;
     std::string type;
     bool isActive();
+    //bool isDog = false;
+    //bool isMower = false;
+    //bool isHole = false;
 
     //QLabel * label;
 
@@ -45,9 +48,13 @@ public:
 class CuriousCat : public Object
 {
 public:
+    //int jumpSpeed;
+    int gravity;
+
     QLabel * cat;
     QMovie * catMovie;
     explicit CuriousCat(QWidget * parent);
+    int health = 100;
     /* //saves a game object
      void saveGame() {
          QFile data("data.txt");

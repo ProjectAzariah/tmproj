@@ -15,6 +15,8 @@ CuriousCat::CuriousCat(QWidget *parent)
     setW(75);
     setH(75);
     setType("CuriousCat");
+    //jumpSpeed = 100;
+    gravity = 0;
 
 
     catMovie = new QMovie(":/cat.gif");
@@ -35,6 +37,7 @@ MadDog::MadDog()
     setH(75);
     setType("MadDog");
     setHealthImpact(50);
+    //isDog = true;
     /*dogMovie = new QMovie(":/dog.gif");
     dog = new QLabel(parent);
     dog->setMovie(dogMovie);
@@ -76,6 +79,7 @@ LawnMower::LawnMower()
     setH(50);
     setType("LawnMower");
     setHealthImpact(25);
+    //isMower = true;
     /*QPixmap mowerPic(":/lawnmower2.png");
     mower = new QLabel(parent);
     mower->setPixmap(mowerPic);
@@ -98,6 +102,7 @@ Hole::Hole()
     setH(300);
     setType("Hole");
     setHealthImpact(100);
+    //isHole = true;
     /*QPixmap holePic(":/hole.png");
     hole = new QLabel(parent);
     hole->setPixmap(holePic);
