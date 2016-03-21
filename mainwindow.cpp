@@ -177,22 +177,7 @@ void MainWindow::obstacleTimerHit()
         obst = o.spawnedObstacles[i];
         obj = o.objects[i];
         obst->move(obst->x() - 1, obst->y());
-<<<<<<< HEAD
-        if (obst->geometry().intersects(cCat->cat->geometry()) && end == nullptr)
-        {
-            end = new QLabel(this);
-            end->setText("YOU LOSE");
-            end->showFullScreen();
-            end->setGeometry(cCat->cat->x(),cCat->cat->y() - 75, 100,100);
-            end->setScaledContents(true);
-            end->show();
-            backTimer->stop();
-            midTimer->stop();
-            frontTimer->stop();
-            obstacleTimer->stop();
-            spawningTimer->stop();
-            cCat->catMovie->stop();
-=======
+
         if (obst->geometry().intersects(cCat->cat->geometry()))
         {
             cCat->health = cCat->health - obj->getHealthImpact();
@@ -216,7 +201,6 @@ void MainWindow::obstacleTimerHit()
                 hurtTimer->start();
             }
 
->>>>>>> 2dc83caa66cfff42caed98681b8c24f6904a144a
         }
     }
 
