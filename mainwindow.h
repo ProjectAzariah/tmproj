@@ -32,6 +32,8 @@ public:
     QTimer * obstacleTimer;
     QTimer * spawningTimer;
     QTimer * furtime;
+    QLabel * end = nullptr;
+
 
 public slots:
     void on_startBtn_clicked();

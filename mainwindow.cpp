@@ -154,6 +154,7 @@ void MainWindow::on_startBtn_clicked(){
     Hole();
     o.spawnObstacles(this);
 }
+//ATTENTION: THIS IS WHERE I PUT THE CODE FOR THE GAME TO STOP WHEN THE CAT RUNS INTO
 
 void MainWindow::obstacleTimerHit()
 {
@@ -164,6 +165,21 @@ void MainWindow::obstacleTimerHit()
         QLabel * obst = new QLabel;
         obst = o.spawnedObstacles[i];
         obst->move(obst->x() - 1, obst->y());
+        if (obst->geometry().intersects(cCat->cat->geometry()) && end == nullptr)
+        {
+            end = new QLabel(this);
+            end->setText("YOU LOSE");
+            end->showFullScreen();
+            end->setGeometry(cCat->cat->x(),cCat->cat->y() - 75, 100,100);
+            end->setScaledContents(true);
+            end->show();
+            backTimer->stop();
+            midTimer->stop();
+            frontTimer->stop();
+            obstacleTimer->stop();
+            spawningTimer->stop();
+            cCat->catMovie->stop();
+        }
     }
 
 }
