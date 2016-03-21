@@ -21,6 +21,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mb->startBtn, SIGNAL(clicked()), SLOT(on_startBtn_clicked()));
     connect(mb->quitBtn, SIGNAL(clicked()), SLOT(on_quitBtn_clicked()));
     connect(mb->playAgainBtn, SIGNAL(clicked()), SLOT(on_playAgainBtn_clicked()));
+    connect(mb->pauseBtn, SIGNAL(clicked()), SLOT(on_pauseBtn_clicked()));
+    connect(mb->resumeBtn, SIGNAL(clicked()), SLOT(on_resumeBtn_clicked()));
+    connect(mb->saveBtn, SIGNAL(clicked()), SLOT(on_saveBtn_clicked()));
+    connect(mb->loadBtn, SIGNAL(clicked()), SLOT(on_loadBtn_clicked()));
 
     //background timers
     backTimer = new QTimer(parent);
@@ -130,12 +134,13 @@ void MainWindow::frontTimerHit()
 
 void MainWindow::on_startBtn_clicked(){
     started=true;
+    mb->healthLabel->show();
+    mb->scoreLabel->show();
     mb->startBtn->setDisabled(true);
     mb->startBtn->hide();
-
+    mb->loadBtn->hide();
     mb->introLabel->hide();
-
-    mb->quitBtn->show();
+    mb->pauseBtn->show();
 
     obstacleTimer = new QTimer(this);
     obstacleTimer->setInterval(10);
@@ -153,6 +158,33 @@ void MainWindow::on_startBtn_clicked(){
     LawnMower();
     Hole();
     o.spawnObstacles(this);
+}
+
+void MainWindow:: on_loadBtn_clicked(){
+    //CODE TO LOAD A GAME
+}
+
+void MainWindow:: on_pauseBtn_clicked(){
+    mb->quitBtn->show();
+    mb->saveBtn->show();
+    mb->pauseBtn->hide();
+    mb->resumeBtn->show();
+
+    obstacleTimer->stop();
+    spawningTimer->stop();
+    backTimer->stop();
+    midTimer->stop();
+    frontTimer->stop();
+    obstacleTimer->stop();
+    spawningTimer->stop();
+    furtime->stop();
+    //cCat->catMovie->stop();
+    /*for(int i = 0; i < Obstacle::instance().obstacles.size(); i++){
+        QLabel * ob = Obstacle::instance().obstacles[i];
+        if(!(ob->movie())){
+            ob->movie()->stop();
+        }
+    }*/
 }
 
 void MainWindow::obstacleTimerHit()
@@ -205,11 +237,7 @@ void MainWindow::keyPressEvent(QKeyEvent* event) {
         furBall->setGeometry(cCat->cat->x() + 35 ,cCat->cat->y() + 30  ,30,20);
         furBall->show();
         furBalls.push_back(furBall);
-        //QTimer * flameTime = new QTimer(this);
-        //flameTime->setInterval(20);
-        //connect(flameTime, SIGNAL(timeout()), this, SLOT(flameTimeHit()));
         furtime->start();
-        //label->move(0, label->y());
         this->furTimeHit();
         break;
     }
@@ -241,14 +269,7 @@ void MainWindow::furTimeHit()
     for (unsigned int i = 0 ; i < furBalls.size(); i++)
     {
         QLabel * ball = furBalls[i];
-        ball->move(ball->x() + 2 , ball->y());
-        /*if (enemyExists == false)
-        {
-
-        }
-        else if (enemyExists)
-        {*/
-            for (unsigned int j = 0; j < o.spawnedObstacles.size(); j++)
+        for (unsigned int j = 0; j < o.spawnedObstacles.size(); j++)
             {
                 QLabel * badGuy = new QLabel;
                 badGuy = o.spawnedObstacles[i];
@@ -276,37 +297,22 @@ void MainWindow::furTimeHit()
                     ball = new QLabel(this);
                 }
             }
-       // }
-
-
-        /*else if (ball->geometry().intersects(dog->geometry()))
-        {
-            delete dog;
-            //dog->deleteLater();
-            dog = new QLabel(this);
-
-        }*/
     }
 }
 
 void MainWindow::on_quitBtn_clicked(){
+    mb->resumeBtn->hide();
+    mb->logoLabel->hide();;
     mb->healthLabel->hide();
     mb->scoreLabel->hide();
     mb->quitBtn->hide();
-    mb->endScreen->show();    
+    mb->endScreen->show();
+    mb->gameOverLabel->show();
     mb->endScreen->setText("Top Scores: ------\n                ------\n                 ------\nYour Score:" + mb->scoreLabel->text());
     mb->playAgainBtn->show();
-    obstacleTimer->stop();
-    spawningTimer->stop();
-    backTimer->stop();
-    midTimer->stop();
-    frontTimer->stop();
-    obstacleTimer->stop();
-    spawningTimer->stop();
-    //furTimer->stop();
 
     cCat->cat->hide();
-    for(int i = 0; i < Obstacle::instance().obstacles.size(); i++){
+    for(size_t i = 0; i < Obstacle::instance().obstacles.size(); i++){
         Obstacle::instance().obstacles[i]->hide();
     }
 
@@ -315,18 +321,43 @@ void MainWindow::on_quitBtn_clicked(){
 void MainWindow::on_playAgainBtn_clicked(){
     health=100;
     score=0;
+    mb->gameOverLabel->hide();
+    mb->logoLabel->show();
     mb->endScreen->hide();
     mb->playAgainBtn->hide();
     mb->scoreLabel->setText("Score: " + QString::number(score));
     mb->scoreLabel->show();
     mb->healthLabel->show();
-    mb->quitBtn->show();
+    mb->quitBtn->hide();
+    mb->saveBtn->hide();
+    mb->resumeBtn->hide();
     cCat->cat->show();
     backTimer->start();
     midTimer->start();
     frontTimer->start();
-    on_startBtn_clicked();
+    mb->startBtn->clicked();
 }
 
+void MainWindow::on_resumeBtn_clicked(){
+    mb->quitBtn->hide();
+    mb->saveBtn->hide();
+    mb->pauseBtn->show();
+    mb->resumeBtn->hide();
+
+    obstacleTimer->start();
+    spawningTimer->start();
+    backTimer->start();
+    midTimer->start();
+    frontTimer->start();
+    obstacleTimer->start();
+    spawningTimer->start();
+    furtime->start();
+}
+
+void MainWindow::on_saveBtn_clicked(){
+    //GAME SAVING CODE HERE
+
+    mb->quitBtn->click();
+}
 
 

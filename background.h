@@ -20,16 +20,21 @@ public:
     //background labels
     QLabel * backLabel;
     QLabel * logoLabel;
+    QLabel * gameOverLabel;
     QLabel * backLabel2;
     QLabel * midLabel;
     QLabel * midLabel2;
     QLabel * frontLabel;
     QLabel * frontLabel2;
     QTextEdit * introLabel;
+    QPushButton* pauseBtn;
     QPushButton * startBtn;
+    QPushButton * loadBtn;
     QLabel* scoreLabel;
     QLabel* healthLabel;
+    QPushButton * saveBtn;
     QPushButton * quitBtn;
+    QPushButton * resumeBtn;
     QTextEdit * endScreen;
     QPushButton * playAgainBtn;
 

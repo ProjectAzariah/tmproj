@@ -35,7 +35,11 @@ public:
 
 public slots:
     void on_startBtn_clicked();
-    void on_quitBtn_clicked();
+    void on_pauseBtn_clicked();
+    void on_quitBtn_clicked();    
+    void on_resumeBtn_clicked();
+    void on_saveBtn_clicked();
+    void on_loadBtn_clicked();
     void on_playAgainBtn_clicked();
     void backTimerHit();
     void midTimerHit();
@@ -44,11 +48,8 @@ public slots:
     void spawningTimerHit();
     void furTimeHit();
 
-
-
-
-
-
+signals:
+    void clicked();
 private:
     Ui::MainWindow *ui;
 protected:

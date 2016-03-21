@@ -14,8 +14,11 @@
         <file>heart.png</file>
         <file>load.png</file>
         <file>logo.png</file>
-        <file>save.png</file>
         <file>start.png</file>
         <file>playagain.png</file>
+        <file>gameover.png</file>
+        <file>quit.png</file>
+        <file>resume.png</file>
+        <file>save.png</file>
     </qresource>
 </RCC>

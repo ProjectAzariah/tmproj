@@ -36,9 +36,6 @@ public:
     void setType(std::string newType) {type = newType;}
     void setHealthImpact(int h){healthimpact = h;}
     int getHealthImpact(){return healthimpact;}
-    //static QLabel *objectSpawner(QWidget * parent);
-    //static std::vector<QLabel*> objects;
-    //static std::vector<Object> spawnedObjects;
 
 };
 
@@ -77,12 +74,7 @@ public:
 class MadDog :public Object
 {
     Q_OBJECT
-public slots:
-    void dogTimerHit();
 
-private:
-    //QLabel * dog;
-    //QMovie * dogMovie;
 public:
     explicit MadDog();
     //QTimer * dogTimer;
