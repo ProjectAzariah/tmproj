@@ -11,6 +11,7 @@ class Obstacle : QObject
 public:
     std::vector<QLabel*> obstacles;
     std::vector<QLabel*> spawnedObstacles;
+    std::vector<Object*> objects;
     //QLabel * dog;
 
 private:
