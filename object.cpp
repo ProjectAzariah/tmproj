@@ -15,6 +15,8 @@ CuriousCat::CuriousCat(QWidget *parent)
     setW(75);
     setH(75);
     setType("CuriousCat");
+    //jumpSpeed = 100;
+    gravity = 0;
 
 
     catMovie = new QMovie(":/cat.gif");
@@ -35,7 +37,21 @@ MadDog::MadDog()
     setH(75);
     setType("MadDog");
     setHealthImpact(50);
+    //isDog = true;
+    /*dogMovie = new QMovie(":/dog.gif");
+    dog = new QLabel(parent);
+    dog->setMovie(dogMovie);
+    dogMovie->start();
+    dog->setGeometry(250,177, 75, 75);
+    dog->setScaledContents(true);
+    //objects.push_back(dog);
+    dog->show();
+    Obstacle& o = Obstacle::instance();
+
+    o.obstacles.push_back(dog);*/
+
 }
+
 
 LawnMower::LawnMower()
 {
