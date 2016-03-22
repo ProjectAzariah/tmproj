@@ -5,6 +5,8 @@
 #include <QTimer>
 #include <vector>
 #include <string>
+#include <QTextStream>
+#include <QFile>
 
 class Object : public QObject
 {
@@ -40,8 +42,8 @@ public:
     void setHealthImpact(int h){healthimpact = h;}
     int getHealthImpact(){return healthimpact;}
 
-    virtual void saveGame() { }
-    void loadGame();
+    virtual void saveGame(QTextStream &out) { }
+    void loadGame(QFile &file);
 
 };
 
@@ -54,6 +56,8 @@ public:
     QLabel * cat;
     QMovie * catMovie;
     explicit CuriousCat(QWidget * parent);
+
+    void saveGame(QTextStream &out);
 
     int health = 100;
     /* //saves a game object
@@ -91,7 +95,7 @@ public:
     //QTimer * dogTimer;
 
 
-    void saveGame();
+    void saveGame(QTextStream &out);
 
 
 };
@@ -104,7 +108,7 @@ private:
 public:
     explicit LawnMower();
 
-    void saveGame();
+    void saveGame(QTextStream &out);
 
 };
 
@@ -116,7 +120,7 @@ private:
 public:
     explicit Hole();
 
-    void saveGame();
+    void saveGame(QTextStream &out);
 /*=======
 
 private:

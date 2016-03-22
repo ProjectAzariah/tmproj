@@ -1,6 +1,9 @@
 #include <algorithm>
 #include <string>
 
+#include <QFile>
+#include <QTextStream>
+
 #include "object.h"
 #include "event.h"
 #include "background.h"
@@ -8,14 +11,13 @@
 
 
 //loads an object
-void Object::loadGame() {
-    QFile data("data.txt");
-    if(data.open(QIODevice::ReadWrite)){
-            QString s = data.readLine();
+void Object::loadGame(QFile &file) {
+    if(file.open(QIODevice::ReadWrite)){
+            QString s = file.readLine();
 
-            QString str = data.readLine();
+            QString str = file.readLine();
             int x = str.toInt();
-            QString str2 = data.readLine();
+            QString str2 = file.readLine();
             int y = str2.toInt();
 
             this->setType(s.toStdString());
@@ -45,6 +47,11 @@ CuriousCat::CuriousCat(QWidget *parent)
     cat->show();
 }
 
+//saves a dog
+void CuriousCat::saveGame(QTextStream &out) {
+
+}
+
 MadDog::MadDog()
 {
     setX(250);
@@ -70,14 +77,11 @@ MadDog::MadDog()
 
 
 //saves a dog
-void MadDog::saveGame() {
-    QFile data("data.txt");
-    if(data.open(QIODevice::ReadWrite)){
-        QTextStream out(&data);
+void MadDog::saveGame(QTextStream &out) {
 
+        out << "MadDog" << "\n";
         out << this->x << "\n";
         out << this->y << "\n";
-    }
 }
 
 
@@ -88,7 +92,7 @@ void MadDog::saveGame() {
     {
         QLabel * enemy = new QLabel;
         enemy = spawnedEns[i];
-        enemy->move(enemy->x() - 1, enemy->y());
+       w enemy->move(enemy->x() - 1, enemy->y());
         if (enemy->geometry().intersects(cat->geometry()) && end == nullptr)
         {
             end = new QLabel(this);
@@ -113,26 +117,18 @@ LawnMower::LawnMower()
 }
 
 //saves a lawnmower
-void LawnMower::saveGame() {
-    QFile data("data.txt");
-    if(data.open(QIODevice::ReadWrite)){
-        QTextStream out(&data);
-
+void LawnMower::saveGame(QTextStream &out) {
+        out << "Lawnmower" << "\n";
         out << this->x << "\n";
         out << this->y << "\n";
-    }
 }
 
 
     //saves a hole
-    void Hole::saveGame() {
-        QFile data("data.txt");
-        if(data.open(QIODevice::ReadWrite)){
-            QTextStream out(&data);
-
+    void Hole::saveGame(QTextStream &out) {
+            out << "Hole" << "\n";
             out << this->x << "\n";
             out << this->y << "\n";
-        }
     }
 
 Hole::Hole()

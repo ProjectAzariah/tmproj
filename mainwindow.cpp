@@ -3,6 +3,8 @@
 #include <vector>
 #include <QString>
 #include <QObject>
+#include <QFile>
+#include <QTextStream>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -164,15 +166,86 @@ void MainWindow::on_startBtn_clicked(){
 
     Obstacle& o = Obstacle::instance();
 
-    /*MadDog();
+    MadDog();
     LawnMower();
-    Hole();*/
+    Hole();
     o.spawnObstacles(this);
 }
 //ATTENTION: THIS IS WHERE I PUT THE CODE FOR THE GAME TO STOP WHEN THE CAT RUNS INTO
 
 void MainWindow:: on_loadBtn_clicked(){
-    //CODE TO LOAD A GAME
+    started=true;
+    mb->healthLabel->show();
+    mb->scoreLabel->show();
+    mb->startBtn->setDisabled(true);
+    mb->startBtn->hide();
+    mb->loadBtn->hide();
+    mb->introLabel->hide();
+    mb->pauseBtn->show();
+
+    obstacleTimer = new QTimer(this);
+    obstacleTimer->setInterval(10);
+    connect(obstacleTimer, SIGNAL(timeout()), this, SLOT(obstacleTimerHit()));
+    obstacleTimer->start();
+
+    spawningTimer = new QTimer(this);
+    spawningTimer->setInterval(1750);
+    connect(spawningTimer, SIGNAL(timeout()), this, SLOT(spawningTimerHit()));
+    spawningTimer->start();
+
+    Obstacle& o = Obstacle::instance();
+
+    MadDog();
+    LawnMower();
+    Hole();
+
+    o.obstacles.clear();
+
+    QFile data("data.txt");
+
+    if(data.open(QIODevice::ReadWrite)){
+            QString num = data.readLine();
+            int numObjs = num.toInt();
+            health = QString(data.readLine()).toInt();
+            score = QString(data.readLine()).toInt();
+            Object* obj = new Object();
+
+            for(int i=0; i < numObjs; i++){
+                obj->loadGame(data);
+                if(obj->getType() == "MadDog"){
+                    QLabel * madDogLabel = new QLabel(this);
+                    QMovie * dogMovie = new QMovie(":/dog.gif");
+                    madDogLabel->setMovie(dogMovie);
+                    madDogLabel->setGeometry(this->width(),200,50,50);
+                    madDogLabel->setScaledContents(true);
+                    dogMovie->start();
+                    madDogLabel->hide();
+                    //madDogLabel->show();
+                    o.obstacles.push_back(madDogLabel);
+                }else if(obj->getType() == "Lawnmower"){
+                    QLabel* lawnMowerLabel = new QLabel(this);
+                    QPixmap mower(":/lawnmower2.png");
+                    lawnMowerLabel->setPixmap(mower);
+                    lawnMowerLabel->setGeometry(this->width(), 201, 50,50);
+                    lawnMowerLabel->setScaledContents(true);
+                    lawnMowerLabel->hide();
+                    //lawnMowerLabel->show();
+                    o.obstacles.push_back(lawnMowerLabel);
+                }else if(obj->getType() == "Hole"){
+                    QLabel* holeLabel = new QLabel(this);
+                    QPixmap hole(":/hole.png");
+                    holeLabel->setPixmap(hole);
+                    holeLabel->setGeometry(this->width(),202,50,300);
+                    holeLabel->setScaledContents(true);
+                    holeLabel->hide();
+                    //holeLabel->show();
+                    o.obstacles.push_back(holeLabel);
+                    //std::random_shuffle(o.obstacles.begin(), o.obstacles.end());
+                }
+                }
+            }
+
+
 }
 
 void MainWindow:: on_pauseBtn_clicked(){
@@ -442,9 +515,18 @@ void MainWindow::on_resumeBtn_clicked(){
 }
 
 void MainWindow::on_saveBtn_clicked(){
-    //GAME SAVING CODE HERE
+        QFile data("data.txt");
+        if(data.open(QIODevice::ReadWrite)){
+            QTextStream out(&data);
+
+            out << Obstacle::instance().objects.size() << "\n";
+            out << health << "\n";
+            out << score << "\n";
+
+            for(Object *obj : Obstacle::instance().objects) {
+                obj->saveGame(out);
+            }
+        }
 
     mb->quitBtn->click();
 }
-
-
