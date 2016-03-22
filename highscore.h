@@ -2,38 +2,50 @@
 #define HIGHSCORE_H
 
 #include <QString>
-#include <cassert>
-#include <iostream>
+#include <QObject>
 #include <fstream>
+#include <vector>
+#include <string>
 
-class HighScore{
+using namespace std;
+
+class HighScore : public QObject {
+
 private:
-    int score, date; //time
+    int OBJscore, date; //time
     QString name;
-public:
-    HighScore();
 
-    HighScore(QString initName, int initScore, /*int initTime,*/ int initDate):
-    score(initScore), name(initName), /*time(initTime),*/ date(initDate) {}
+    vector<string> playerscores;
+public:
+
+
 
     //Getters
-    int getScore() {return score;}
+    int getScore() {return OBJscore;}
     QString getName() {return name;}
     int getDate() {return date;}
     //int getTime() {return time;}
 
 
-    void setScore (int newScore) { score = newScore;}
-    void setName(int newName) {name = newName;}
+    void setScore (int newScore) { OBJscore = newScore;}
+    /*void setName(int newName) {name = newName;}
     void setDate(int newDate) {date =  newDate;}
-    //void setTime(int newTime) { time = newTime;}
+    //void setTime(int newTime) { time = newTime;}*/
 
 
     //uses the <filename> with a certain name and saves the data to it
-    void saveToFile(QString filename);
+    void saveToFile();
 
     //uses the <filename> to get the file reads from it and outputs the data in corect format
-    void loadFromFile(QString filename);
+    void loadFromFile();
+
+    void add();
+
+    //BubbleSort(vector<string> &playerscore);
+
+    void clearscore();
+
+    void Print();
 
     void testCases();
 
