@@ -15,6 +15,9 @@ protected:
     int healthimpact;
     std::string type;
     bool isActive();
+    //bool isDog = false;
+    //bool isMower = false;
+    //bool isHole = false;
 
     //QLabel * label;
 
@@ -36,9 +39,6 @@ public:
     void setType(std::string newType) {type = newType;}
     void setHealthImpact(int h){healthimpact = h;}
     int getHealthImpact(){return healthimpact;}
-    //static QLabel *objectSpawner(QWidget * parent);
-    //static std::vector<QLabel*> objects;
-    //static std::vector<Object> spawnedObjects;
 
     virtual void saveGame() { }
     void loadGame();
@@ -48,25 +48,50 @@ public:
 class CuriousCat : public Object
 {
 public:
+    //int jumpSpeed;
+    int gravity;
+
     QLabel * cat;
     QMovie * catMovie;
     explicit CuriousCat(QWidget * parent);
+
+    int health = 100;
+    /* //saves a game object
+     void saveGame() {
+         QFile data("data.txt");
+         if(data.open(QIODevice::ReadWrite)){
+             QTextStream out(&data);
+
+             out << label->x() << "\n";
+             out << label->y() << "\n";
+         }
+     }
+
+     //loads a game object
+     void loadGame() {
+         QFile data("data.txt");
+         if(data.open(QIODevice::ReadWrite)){
+                 QString str = data.readLine();
+                 int catx = str.toInt();
+                 QString str2 = data.readLine();
+                 int caty = str2.toInt();
+
+                 label->setGeometry(catx, caty, 75, 75);
+         }
+     }*/
+
 };
 
 class MadDog :public Object
 {
     Q_OBJECT
-public slots:
-    void dogTimerHit();
 
-private:
-    //QLabel * dog;
-    //QMovie * dogMovie;
 public:
     explicit MadDog();
     //QTimer * dogTimer;
 
-    void saveGame()=0;
+
+    void saveGame();
 
 
 };
@@ -79,7 +104,7 @@ private:
 public:
     explicit LawnMower();
 
-    void saveGame()=0;
+    void saveGame();
 
 };
 
@@ -91,7 +116,7 @@ private:
 public:
     explicit Hole();
 
-    void saveGame()=0;
+    void saveGame();
 /*=======
 
 private:

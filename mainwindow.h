@@ -33,9 +33,18 @@ public:
     QTimer * spawningTimer;
     QTimer * furtime;
 
+    QTimer * jumpTimer;
+    QTimer * hurtTimer;
+
+    QLabel * end = nullptr;
+
 public slots:
     void on_startBtn_clicked();
-    void on_quitBtn_clicked();
+    void on_pauseBtn_clicked();
+    void on_quitBtn_clicked();    
+    void on_resumeBtn_clicked();
+    void on_saveBtn_clicked();
+    void on_loadBtn_clicked();
     void on_playAgainBtn_clicked();
     void backTimerHit();
     void midTimerHit();
@@ -43,12 +52,11 @@ public slots:
     void obstacleTimerHit();
     void spawningTimerHit();
     void furTimeHit();
+    void jumpTimerHit();
+    void hurtTimerHit();
 
-
-
-
-
-
+signals:
+    void clicked();
 private:
     Ui::MainWindow *ui;
 protected:
