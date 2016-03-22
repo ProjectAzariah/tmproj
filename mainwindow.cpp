@@ -149,9 +149,9 @@ void MainWindow::on_startBtn_clicked(){
 
     Obstacle& o = Obstacle::instance();
 
-    MadDog();
+    /*MadDog();
     LawnMower();
-    Hole();
+    Hole();*/
     o.spawnObstacles(this);
 }
 

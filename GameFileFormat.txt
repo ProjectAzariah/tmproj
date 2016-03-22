@@ -1,40 +1,29 @@
 Game File Format
 <<<<<<<<<<<<<<<
 
-Level
-Cat x
-Cat y
-Cat speed
-Cat direction
 Number of obstacles
+Obstacle 1 type
 Obstacle 1 x
 Obstacle 1 y
 .
 .
 .
 .
+Obstacle type
 Obstacle x
 Obstacle y
 Health score
 Score
-Cheat mode status
-
-<<<<<<<<<<<<<<<
-
-Example
 
 3
-25
-0
-6
-1
+Lawnmower
 3
 6
+Maddog
 0
 100
+Hole
 0
 110
-0
 25%
 150
-False

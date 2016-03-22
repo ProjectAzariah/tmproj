@@ -61,7 +61,4 @@ QLabel* Obstacle::spawnObstacles(QWidget *parent)
     spawnedObstacles.push_back(ob);
 
     return ob;
-
-
 }
-

@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <string>
 
 #include "object.h"
 #include "event.h"
@@ -6,7 +7,22 @@
 #include "mainwindow.h"
 
 
+//loads an object
+void Object::loadGame() {
+    QFile data("data.txt");
+    if(data.open(QIODevice::ReadWrite)){
+            QString s = data.readLine();
 
+            QString str = data.readLine();
+            int x = str.toInt();
+            QString str2 = data.readLine();
+            int y = str2.toInt();
+
+            this->setType(s.toStdString());
+            this->setX(x);
+            this->setY(y);
+    }
+}
 
 CuriousCat::CuriousCat(QWidget *parent)
 {
@@ -49,6 +65,19 @@ MadDog::MadDog()
 
 }
 
+//saves a dog
+void MadDog::saveGame() {
+    QFile data("data.txt");
+    if(data.open(QIODevice::ReadWrite)){
+        QTextStream out(&data);
+
+        out << this->x << "\n";
+        out << this->y << "\n";
+    }
+}
+
+
+
 void MadDog::dogTimerHit()
 {
     /*for (unsigned int i = 0; i < spawnedEns.size(); i++)
@@ -90,6 +119,29 @@ LawnMower::LawnMower()
 
 }
 
+//saves a lawnmower
+void LawnMower::saveGame() {
+    QFile data("data.txt");
+    if(data.open(QIODevice::ReadWrite)){
+        QTextStream out(&data);
+
+        out << this->x << "\n";
+        out << this->y << "\n";
+    }
+}
+
+
+    //saves a hole
+    void Hole::saveGame() {
+        QFile data("data.txt");
+        if(data.open(QIODevice::ReadWrite)){
+            QTextStream out(&data);
+
+            out << this->x << "\n";
+            out << this->y << "\n";
+        }
+    }
+
 Hole::Hole()
 {
     setX(150);
@@ -111,9 +163,11 @@ Hole::Hole()
 }
 
 
+
+
 //QLabel* Object::objectSpawner(QWidget *parent)
-//{
-    /*
+/*{
+
     QLabel * madDogLabel = new QLabel(parent);
     QMovie * dogMovie = new QMovie(":/dog.gif");
     madDogLabel->setMovie(dogMovie);
@@ -140,8 +194,4 @@ Hole::Hole()
     //objects.push_back(holeLabel);
 
     //objects = {madDogLabel,lawnMowerLabel,holeLabel};
-    */
-
-//}
-
-
+    }*/

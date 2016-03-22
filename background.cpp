@@ -115,11 +115,3 @@ MovingBackground::MovingBackground(QWidget *parent)
     playAgainBtn->setIconSize(start.rect().size());
     playAgainBtn->hide();
 }
-
-
-
-
-
-
-
-
