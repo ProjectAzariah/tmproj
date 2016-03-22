@@ -1,4 +1,8 @@
 #include <algorithm>
+#include <string>
+
+#include <QFile>
+#include <QTextStream>
 
 #include "object.h"
 #include "event.h"
@@ -6,7 +10,21 @@
 #include "mainwindow.h"
 
 
+//loads an object
+void Object::loadGame(QFile &file) {
+    if(file.open(QIODevice::ReadWrite)){
+            QString s = file.readLine();
 
+            QString str = file.readLine();
+            int x = str.toInt();
+            QString str2 = file.readLine();
+            int y = str2.toInt();
+
+            this->setType(s.toStdString());
+            this->setX(x);
+            this->setY(y);
+    }
+}
 
 CuriousCat::CuriousCat(QWidget *parent)
 {
@@ -15,6 +33,8 @@ CuriousCat::CuriousCat(QWidget *parent)
     setW(75);
     setH(75);
     setType("CuriousCat");
+    //jumpSpeed = 100;
+    gravity = 0;
 
 
     catMovie = new QMovie(":/cat.gif");
@@ -27,6 +47,11 @@ CuriousCat::CuriousCat(QWidget *parent)
     cat->show();
 }
 
+//saves a dog
+void CuriousCat::saveGame(QTextStream &out) {
+
+}
+
 MadDog::MadDog()
 {
     setX(250);
@@ -35,6 +60,7 @@ MadDog::MadDog()
     setH(75);
     setType("MadDog");
     setHealthImpact(50);
+    //isDog = true;
     /*dogMovie = new QMovie(":/dog.gif");
     dog = new QLabel(parent);
     dog->setMovie(dogMovie);
@@ -49,13 +75,24 @@ MadDog::MadDog()
 
 }
 
-void MadDog::dogTimerHit()
+
+//saves a dog
+void MadDog::saveGame(QTextStream &out) {
+
+        out << "MadDog" << "\n";
+        out << this->x << "\n";
+        out << this->y << "\n";
+}
+
+
+
+/*void MadDog::dogTimerHit()
 {
     /*for (unsigned int i = 0; i < spawnedEns.size(); i++)
     {
         QLabel * enemy = new QLabel;
         enemy = spawnedEns[i];
-        enemy->move(enemy->x() - 1, enemy->y());
+       w enemy->move(enemy->x() - 1, enemy->y());
         if (enemy->geometry().intersects(cat->geometry()) && end == nullptr)
         {
             end = new QLabel(this);
@@ -65,8 +102,9 @@ void MadDog::dogTimerHit()
             end->setScaledContents(true);
             end->show();
         }
-    }*/
-}
+    }
+}*/
+
 
 LawnMower::LawnMower()
 {
@@ -76,19 +114,22 @@ LawnMower::LawnMower()
     setH(50);
     setType("LawnMower");
     setHealthImpact(25);
-    /*QPixmap mowerPic(":/lawnmower2.png");
-    mower = new QLabel(parent);
-    mower->setPixmap(mowerPic);
-    mower->setGeometry(350, 198, 50,50);
-    mower->setScaledContents(true);
-    mower->show();
-    Obstacle& o = Obstacle::instance();
-
-    o.obstacles.push_back(mower);
-
-    //objects.push_back(mower);*/
-
 }
+
+//saves a lawnmower
+void LawnMower::saveGame(QTextStream &out) {
+        out << "Lawnmower" << "\n";
+        out << this->x << "\n";
+        out << this->y << "\n";
+}
+
+
+    //saves a hole
+    void Hole::saveGame(QTextStream &out) {
+            out << "Hole" << "\n";
+            out << this->x << "\n";
+            out << this->y << "\n";
+    }
 
 Hole::Hole()
 {
@@ -98,22 +139,14 @@ Hole::Hole()
     setH(300);
     setType("Hole");
     setHealthImpact(100);
-    /*QPixmap holePic(":/hole.png");
-    hole = new QLabel(parent);
-    hole->setPixmap(holePic);
-    hole->setGeometry(150, 208, 75,300);
-    hole->setScaledContents(true);
-    hole->show();
-    Obstacle& o = Obstacle::instance();
-
-    o.obstacles.push_back(hole);*/
-    //objects.push_back(hole);
 }
 
 
+
+
 //QLabel* Object::objectSpawner(QWidget *parent)
-//{
-    /*
+/*{
+
     QLabel * madDogLabel = new QLabel(parent);
     QMovie * dogMovie = new QMovie(":/dog.gif");
     madDogLabel->setMovie(dogMovie);
@@ -140,8 +173,4 @@ Hole::Hole()
     //objects.push_back(holeLabel);
 
     //objects = {madDogLabel,lawnMowerLabel,holeLabel};
-    */
-
-//}
-
-
+    }*/

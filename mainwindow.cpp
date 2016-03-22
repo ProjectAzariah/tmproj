@@ -3,6 +3,8 @@
 #include <vector>
 #include <QString>
 #include <QObject>
+#include <QFile>
+#include <QTextStream>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -21,6 +23,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mb->startBtn, SIGNAL(clicked()), SLOT(on_startBtn_clicked()));
     connect(mb->quitBtn, SIGNAL(clicked()), SLOT(on_quitBtn_clicked()));
     connect(mb->playAgainBtn, SIGNAL(clicked()), SLOT(on_playAgainBtn_clicked()));
+    connect(mb->pauseBtn, SIGNAL(clicked()), SLOT(on_pauseBtn_clicked()));
+    connect(mb->resumeBtn, SIGNAL(clicked()), SLOT(on_resumeBtn_clicked()));
+    connect(mb->saveBtn, SIGNAL(clicked()), SLOT(on_saveBtn_clicked()));
+    connect(mb->loadBtn, SIGNAL(clicked()), SLOT(on_loadBtn_clicked()));
 
     //background timers
     backTimer = new QTimer(parent);
@@ -44,6 +50,16 @@ MainWindow::MainWindow(QWidget *parent) :
     furtime = new QTimer(this);
     furtime->setInterval(10);
     connect(furtime, SIGNAL(timeout()), this, SLOT(furTimeHit()));
+    hurtTimer = new QTimer(this);
+
+    //hurtTimer
+    hurtTimer->setInterval(100);
+    connect(hurtTimer, SIGNAL(timeout()),this,SLOT(hurtTimerHit()));
+
+    //jumpTimer
+    jumpTimer = new QTimer(this);
+    jumpTimer->setInterval(5);
+    connect(jumpTimer, SIGNAL(timeout()), this, SLOT(jumpTimerHit()));
 
     cCat =  new CuriousCat(this);
 }
@@ -130,12 +146,13 @@ void MainWindow::frontTimerHit()
 
 void MainWindow::on_startBtn_clicked(){
     started=true;
+    mb->healthLabel->show();
+    mb->scoreLabel->show();
     mb->startBtn->setDisabled(true);
     mb->startBtn->hide();
-
+    mb->loadBtn->hide();
     mb->introLabel->hide();
-
-    mb->quitBtn->show();
+    mb->pauseBtn->show();
 
     obstacleTimer = new QTimer(this);
     obstacleTimer->setInterval(10);
@@ -154,6 +171,105 @@ void MainWindow::on_startBtn_clicked(){
     Hole();
     o.spawnObstacles(this);
 }
+//ATTENTION: THIS IS WHERE I PUT THE CODE FOR THE GAME TO STOP WHEN THE CAT RUNS INTO
+
+void MainWindow:: on_loadBtn_clicked(){
+    started=true;
+    mb->healthLabel->show();
+    mb->scoreLabel->show();
+    mb->startBtn->setDisabled(true);
+    mb->startBtn->hide();
+    mb->loadBtn->hide();
+    mb->introLabel->hide();
+    mb->pauseBtn->show();
+
+    obstacleTimer = new QTimer(this);
+    obstacleTimer->setInterval(10);
+    connect(obstacleTimer, SIGNAL(timeout()), this, SLOT(obstacleTimerHit()));
+    obstacleTimer->start();
+
+    spawningTimer = new QTimer(this);
+    spawningTimer->setInterval(1750);
+    connect(spawningTimer, SIGNAL(timeout()), this, SLOT(spawningTimerHit()));
+    spawningTimer->start();
+
+    Obstacle& o = Obstacle::instance();
+
+    MadDog();
+    LawnMower();
+    Hole();
+
+    o.obstacles.clear();
+
+    QFile data("data.txt");
+
+    if(data.open(QIODevice::ReadWrite)){
+            QString num = data.readLine();
+            int numObjs = num.toInt();
+            health = QString(data.readLine()).toInt();
+            score = QString(data.readLine()).toInt();
+            Object* obj = new Object();
+
+            for(int i=0; i < numObjs; i++){
+                obj->loadGame(data);
+                if(obj->getType() == "MadDog"){
+                    QLabel * madDogLabel = new QLabel(this);
+                    QMovie * dogMovie = new QMovie(":/dog.gif");
+                    madDogLabel->setMovie(dogMovie);
+                    madDogLabel->setGeometry(this->width(),200,50,50);
+                    madDogLabel->setScaledContents(true);
+                    dogMovie->start();
+                    madDogLabel->hide();
+                    //madDogLabel->show();
+                    o.obstacles.push_back(madDogLabel);
+                }else if(obj->getType() == "Lawnmower"){
+                    QLabel* lawnMowerLabel = new QLabel(this);
+                    QPixmap mower(":/lawnmower2.png");
+                    lawnMowerLabel->setPixmap(mower);
+                    lawnMowerLabel->setGeometry(this->width(), 201, 50,50);
+                    lawnMowerLabel->setScaledContents(true);
+                    lawnMowerLabel->hide();
+                    //lawnMowerLabel->show();
+                    o.obstacles.push_back(lawnMowerLabel);
+                }else if(obj->getType() == "Hole"){
+                    QLabel* holeLabel = new QLabel(this);
+                    QPixmap hole(":/hole.png");
+                    holeLabel->setPixmap(hole);
+                    holeLabel->setGeometry(this->width(),202,50,300);
+                    holeLabel->setScaledContents(true);
+                    holeLabel->hide();
+                    //holeLabel->show();
+                    o.obstacles.push_back(holeLabel);
+                    //std::random_shuffle(o.obstacles.begin(), o.obstacles.end());
+                }
+                }
+            }
+
+
+}
+
+void MainWindow:: on_pauseBtn_clicked(){
+    mb->quitBtn->show();
+    mb->saveBtn->show();
+    mb->pauseBtn->hide();
+    mb->resumeBtn->show();
+
+    obstacleTimer->stop();
+    spawningTimer->stop();
+    backTimer->stop();
+    midTimer->stop();
+    frontTimer->stop();
+    obstacleTimer->stop();
+    spawningTimer->stop();
+    furtime->stop();
+    //cCat->catMovie->stop();
+    /*for(int i = 0; i < Obstacle::instance().obstacles.size(); i++){
+        QLabel * ob = Obstacle::instance().obstacles[i];
+        if(!(ob->movie())){
+            ob->movie()->stop();
+        }
+    }*/
+}
 
 void MainWindow::obstacleTimerHit()
 {
@@ -162,10 +278,49 @@ void MainWindow::obstacleTimerHit()
     for (unsigned int i = 0; i < o.spawnedObstacles.size(); i++)
     {
         QLabel * obst = new QLabel;
+        Object * obj = new Object;
         obst = o.spawnedObstacles[i];
+        obj = o.objects[i];
         obst->move(obst->x() - 1, obst->y());
+
+        if (obst->geometry().intersects(cCat->cat->geometry()))
+        {
+            cCat->health = cCat->health - obj->getHealthImpact();
+            if (cCat->health <= 0)
+            {
+                end = new QLabel(this);
+                end->setText("YOU LOSE");
+                end->showFullScreen();
+                end->setGeometry(cCat->cat->x(),cCat->cat->y() - 75, 100,100);
+                end->setScaledContents(true);
+                end->show();
+                backTimer->stop();
+                midTimer->stop();
+                frontTimer->stop();
+                obstacleTimer->stop();
+                spawningTimer->stop();
+                cCat->catMovie->stop();
+            }
+            else
+            {
+                hurtTimer->start();
+            }
+
+        }
     }
 
+}
+
+void MainWindow::hurtTimerHit()
+{
+    if (cCat->cat->isVisible())
+    {
+        cCat->cat->hide();
+    }
+    else
+    {
+        cCat->cat->show();
+    }
 }
 
 void MainWindow::spawningTimerHit()
@@ -186,16 +341,50 @@ void MainWindow::spawningTimerHit()
     mb->scoreLabel->setText("Score: "+ QString::number(score));
 }
 
+void MainWindow::jumpTimerHit()
+{
+    if (cCat->gravity < 100)
+    {
+        cCat->gravity += 1;
+        cCat->cat->move(cCat->cat->x(),cCat->cat->y() - 1);
+        if (cCat->gravity == 100)
+        {
+            jumpTimer->setInterval(1000);
+        }
+    }
+
+    else if (cCat->gravity >= 100)
+    {
+        jumpTimer->setInterval(5);
+        //cCat->cat->move(cCat->cat->x(), cCat->cat->y() + 76);
+        //cCat->gravity -= 1;
+        if (cCat->cat->y() != 176)
+        {
+            cCat->cat->move(cCat->cat->x(),cCat->cat->y() + 1);
+
+        }
+        else
+        {
+            cCat->gravity = 0;
+            jumpTimer->stop();
+        }
+
+    }
+}
+
 void MainWindow::keyPressEvent(QKeyEvent* event) {
     //qDebug() << event->key();   //uncomment this line if you want to figure out what key number a key is for the case in the
     switch(event->key())
     {
     case 87:
 
+        jumpTimer->start();
+
+        //cCat->cat->move(cCat->cat->x(), cCat->cat->y() - 76);
+        //cCat->catMovie->stop();
 
 
-        cCat->cat->move(cCat->cat->x(), cCat->cat->y() - 76);
-        cCat->catMovie->stop();
+
         break;
     case 68:
         furBall = new QLabel(this);
@@ -205,11 +394,7 @@ void MainWindow::keyPressEvent(QKeyEvent* event) {
         furBall->setGeometry(cCat->cat->x() + 35 ,cCat->cat->y() + 30  ,30,20);
         furBall->show();
         furBalls.push_back(furBall);
-        //QTimer * flameTime = new QTimer(this);
-        //flameTime->setInterval(20);
-        //connect(flameTime, SIGNAL(timeout()), this, SLOT(flameTimeHit()));
         furtime->start();
-        //label->move(0, label->y());
         this->furTimeHit();
         break;
     }
@@ -224,8 +409,11 @@ void MainWindow::keyReleaseEvent(QKeyEvent * event)
     switch(event->key())
     {
     case 87:
-        cCat->cat->move(cCat->cat->x(), cCat->cat->y() + 76);
-        cCat->catMovie->start();
+       // jumpTimer->stop();
+        //cCat->cat->move(cCat->cat->x(), cCat->cat->y() + 76);
+        //wcCat->catMovie->start();
+
+
         break;
     case 68:
         break;
@@ -241,14 +429,7 @@ void MainWindow::furTimeHit()
     for (unsigned int i = 0 ; i < furBalls.size(); i++)
     {
         QLabel * ball = furBalls[i];
-        ball->move(ball->x() + 2 , ball->y());
-        /*if (enemyExists == false)
-        {
-
-        }
-        else if (enemyExists)
-        {*/
-            for (unsigned int j = 0; j < o.spawnedObstacles.size(); j++)
+        for (unsigned int j = 0; j < o.spawnedObstacles.size(); j++)
             {
                 QLabel * badGuy = new QLabel;
                 badGuy = o.spawnedObstacles[i];
@@ -276,37 +457,22 @@ void MainWindow::furTimeHit()
                     ball = new QLabel(this);
                 }
             }
-       // }
-
-
-        /*else if (ball->geometry().intersects(dog->geometry()))
-        {
-            delete dog;
-            //dog->deleteLater();
-            dog = new QLabel(this);
-
-        }*/
     }
 }
 
 void MainWindow::on_quitBtn_clicked(){
+    mb->resumeBtn->hide();
+    mb->logoLabel->hide();;
     mb->healthLabel->hide();
     mb->scoreLabel->hide();
     mb->quitBtn->hide();
-    mb->endScreen->show();    
+    mb->endScreen->show();
+    mb->gameOverLabel->show();
     mb->endScreen->setText("Top Scores: ------\n                ------\n                 ------\nYour Score:" + mb->scoreLabel->text());
     mb->playAgainBtn->show();
-    obstacleTimer->stop();
-    spawningTimer->stop();
-    backTimer->stop();
-    midTimer->stop();
-    frontTimer->stop();
-    obstacleTimer->stop();
-    spawningTimer->stop();
-    //furTimer->stop();
 
     cCat->cat->hide();
-    for(int i = 0; i < Obstacle::instance().obstacles.size(); i++){
+    for(size_t i = 0; i < Obstacle::instance().obstacles.size(); i++){
         Obstacle::instance().obstacles[i]->hide();
     }
 
@@ -315,18 +481,52 @@ void MainWindow::on_quitBtn_clicked(){
 void MainWindow::on_playAgainBtn_clicked(){
     health=100;
     score=0;
+    mb->gameOverLabel->hide();
+    mb->logoLabel->show();
     mb->endScreen->hide();
     mb->playAgainBtn->hide();
     mb->scoreLabel->setText("Score: " + QString::number(score));
     mb->scoreLabel->show();
     mb->healthLabel->show();
-    mb->quitBtn->show();
+    mb->quitBtn->hide();
+    mb->saveBtn->hide();
+    mb->resumeBtn->hide();
     cCat->cat->show();
     backTimer->start();
     midTimer->start();
     frontTimer->start();
-    on_startBtn_clicked();
+    mb->startBtn->clicked();
 }
 
+void MainWindow::on_resumeBtn_clicked(){
+    mb->quitBtn->hide();
+    mb->saveBtn->hide();
+    mb->pauseBtn->show();
+    mb->resumeBtn->hide();
 
+    obstacleTimer->start();
+    spawningTimer->start();
+    backTimer->start();
+    midTimer->start();
+    frontTimer->start();
+    obstacleTimer->start();
+    spawningTimer->start();
+    furtime->start();
+}
 
+void MainWindow::on_saveBtn_clicked(){
+        QFile data("data.txt");
+        if(data.open(QIODevice::ReadWrite)){
+            QTextStream out(&data);
+
+            out << Obstacle::instance().objects.size() << "\n";
+            out << health << "\n";
+            out << score << "\n";
+
+            for(Object *obj : Obstacle::instance().objects) {
+                obj->saveGame(out);
+            }
+        }
+
+    mb->quitBtn->click();
+}

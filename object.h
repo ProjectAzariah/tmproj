@@ -5,16 +5,21 @@
 #include <QTimer>
 #include <vector>
 #include <string>
+#include <QTextStream>
+#include <QFile>
 
 class Object : public QObject
 {
     Q_OBJECT
 
-private:
+protected:
     int x, y, h, w;
     int healthimpact;
     std::string type;
     bool isActive();
+    //bool isDog = false;
+    //bool isMower = false;
+    //bool isHole = false;
 
     //QLabel * label;
 
@@ -36,18 +41,25 @@ public:
     void setType(std::string newType) {type = newType;}
     void setHealthImpact(int h){healthimpact = h;}
     int getHealthImpact(){return healthimpact;}
-    //static QLabel *objectSpawner(QWidget * parent);
-    //static std::vector<QLabel*> objects;
-    //static std::vector<Object> spawnedObjects;
+
+    virtual void saveGame(QTextStream &out) { }
+    void loadGame(QFile &file);
 
 };
 
 class CuriousCat : public Object
 {
 public:
+    //int jumpSpeed;
+    int gravity;
+
     QLabel * cat;
     QMovie * catMovie;
     explicit CuriousCat(QWidget * parent);
+
+    void saveGame(QTextStream &out);
+
+    int health = 100;
     /* //saves a game object
      void saveGame() {
          QFile data("data.txt");
@@ -77,39 +89,14 @@ public:
 class MadDog :public Object
 {
     Q_OBJECT
-public slots:
-    void dogTimerHit();
 
-private:
-    //QLabel * dog;
-    //QMovie * dogMovie;
 public:
     explicit MadDog();
     //QTimer * dogTimer;
 
-    //saves a game object
-    /*void saveGame() {
-        QFile data("data.txt");
-        if(data.open(QIODevice::ReadWrite)){
-            QTextStream out(&data);
 
-            out << label->x() << "\n";
-            out << label->y() << "\n";
-        }
-    }
+    void saveGame(QTextStream &out);
 
-    //loads a game object
-    void loadGame() {
-        QFile data("data.txt");
-        if(data.open(QIODevice::ReadWrite)){
-                QString str = data.readLine();
-                int x = str.toInt();
-                QString str2 = data.readLine();
-                int y = str2.toInt();
-
-                label->setGeometry(x, y, 75, 75);
-        }
-    }*/
 
 };
 
@@ -121,29 +108,7 @@ private:
 public:
     explicit LawnMower();
 
-    //saves a game object
-    /*void saveGame() {
-        QFile data("data.txt");
-        if(data.open(QIODevice::ReadWrite)){
-            QTextStream out(&data);
-
-            out << label->x() << "\n";
-            out << label->y() << "\n";
-        }
-    }
-
-    //loads a game object
-    void loadGame() {
-        QFile data("data.txt");
-        if(data.open(QIODevice::ReadWrite)){
-                QString str = data.readLine();
-                int x = str.toInt();
-                QString str2 = data.readLine();
-                int y = str2.toInt();
-
-                label->setGeometry(x, y, 50, 50);
-        }
-    }*/
+    void saveGame(QTextStream &out);
 
 };
 
@@ -155,27 +120,8 @@ private:
 public:
     explicit Hole();
 
-    //saves a game object
-    /*void saveGame() {
-        QFile data("data.txt");
-        if(data.open(QIODevice::ReadWrite)){
-            QTextStream out(&data);
-
-            out << label->x() << "\n";
-            out << label->y() << "\n";
-        }
-    }
-
-    //loads a game object
-    void loadGame() {
-        QFile data("data.txt");
-        if(data.open(QIODevice::ReadWrite)){
-                QString str = data.readLine();
-                int x = str.toInt();
-                QString str2 = data.readLine();
-                int y = str2.toInt();
-
-=======
+    void saveGame(QTextStream &out);
+/*=======
 
 private:
     int x;
@@ -215,29 +161,7 @@ public:
     QLabel * cat;
     QMovie * catMovie;
     explicit CuriousCat(QWidget * parent);
-    /* //saves a game object
-     void saveGame() {
-         QFile data("data.txt");
-         if(data.open(QIODevice::ReadWrite)){
-             QTextStream out(&data);
-
-             out << label->x() << "\n";
-             out << label->y() << "\n";
-         }
-     }
-
-     //loads a game object
-     void loadGame() {
-         QFile data("data.txt");
-         if(data.open(QIODevice::ReadWrite)){
-                 QString str = data.readLine();
-                 int catx = str.toInt();
-                 QString str2 = data.readLine();
-                 int caty = str2.toInt();
-
-                 label->setGeometry(catx, caty, 75, 75);
-         }
-     }*/
+  */
 };
 
 #endif // OBJECT_H

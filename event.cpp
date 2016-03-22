@@ -28,8 +28,9 @@ QLabel* Obstacle::spawnObstacles(QWidget *parent)
 
     QLabel * madDogLabel = new QLabel(parent);
     QMovie * dogMovie = new QMovie(":/dog.gif");
+    Object * dog = new MadDog();
     madDogLabel->setMovie(dogMovie);
-    madDogLabel->setGeometry(parent->width(),177,75,75);
+    madDogLabel->setGeometry(parent->width(),200,50,50);
     madDogLabel->setScaledContents(true);
     dogMovie->start();
     madDogLabel->hide();
@@ -39,7 +40,7 @@ QLabel* Obstacle::spawnObstacles(QWidget *parent)
     QLabel* lawnMowerLabel = new QLabel(parent);
     QPixmap mower(":/lawnmower2.png");
     lawnMowerLabel->setPixmap(mower);
-    lawnMowerLabel->setGeometry(parent->width(), 175, 70,70);
+    lawnMowerLabel->setGeometry(parent->width(), 201, 50,50);
     lawnMowerLabel->setScaledContents(true);
     lawnMowerLabel->hide();
     //lawnMowerLabel->show();
@@ -48,7 +49,7 @@ QLabel* Obstacle::spawnObstacles(QWidget *parent)
     QLabel* holeLabel = new QLabel(parent);
     QPixmap hole(":/hole.png");
     holeLabel->setPixmap(hole);
-    holeLabel->setGeometry(parent->width(),191,100,400);
+    holeLabel->setGeometry(parent->width(),202,50,300);
     holeLabel->setScaledContents(true);
     holeLabel->hide();
     //holeLabel->show();
@@ -56,12 +57,26 @@ QLabel* Obstacle::spawnObstacles(QWidget *parent)
     std::random_shuffle(o.obstacles.begin(), o.obstacles.end());
 
     QLabel * ob = new QLabel(parent);
+
     ob = o.obstacles[0];
+    if (ob->y() == 200)
+    {
+        Object * obj = new MadDog();
+        objects.push_back(obj);
+    }
+    else if (ob->y() == 201)
+    {
+        Object * obj = new LawnMower();
+        objects.push_back(obj);
+    }
+    else if (ob->y() == 202)
+    {
+        Object * obj = new Hole();
+        objects.push_back(obj);
+    }
+
     ob->show();
     spawnedObstacles.push_back(ob);
 
     return ob;
-
-
 }
-
