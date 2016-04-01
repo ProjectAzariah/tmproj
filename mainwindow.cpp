@@ -5,6 +5,8 @@
 #include <QObject>
 #include <QFile>
 #include <QTextStream>
+#include <QDebug>
+#include <iostream>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -47,19 +49,24 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     //furballtimer
-    furtime = new QTimer(this);
-    furtime->setInterval(10);
-    connect(furtime, SIGNAL(timeout()), this, SLOT(furTimeHit()));
+    furTimer = new QTimer(this);
+    furTimer->setInterval(10);
+    connect(furTimer, SIGNAL(timeout()), this, SLOT(furTimerHit()));
+    //furTimer->start();
     hurtTimer = new QTimer(this);
 
     //hurtTimer
     hurtTimer->setInterval(100);
     connect(hurtTimer, SIGNAL(timeout()),this,SLOT(hurtTimerHit()));
 
+    hurtCounter = 0;
+
     //jumpTimer
     jumpTimer = new QTimer(this);
-    jumpTimer->setInterval(5);
+    jumpTimer->setInterval(1);
     connect(jumpTimer, SIGNAL(timeout()), this, SLOT(jumpTimerHit()));
+
+    didCollide = false;
 
     cCat =  new CuriousCat(this);
 }
@@ -72,19 +79,19 @@ MainWindow::~MainWindow()
 
 void MainWindow::backTimerHit()
 {
-    if (mb->backLabel->x() >= -400 && mb->backLabel2->x() >= -400)
+    if (mb->backLabel->x() >= -1024 && mb->backLabel2->x() >= -1024)
     {
         mb->backLabel->move(mb->backLabel->x() - 1, mb->backLabel->y());
         mb->backLabel2->move(mb->backLabel2->x() - 1, mb->backLabel2->y());
     }
-    else if (mb->backLabel->x() < -400)
+    else if (mb->backLabel->x() < -1024)
     {
         mb->backLabel->hide();
         mb->backLabel->move(mb->backLabel->x() + (mb->backLabel->width() * 2) - 1 , mb->backLabel->y());
         mb->backLabel2->move(mb->backLabel2->x() - 1, mb->backLabel2->y());
         mb->backLabel->show();
     }
-    else if (mb->backLabel2->x() < -400)
+    else if (mb->backLabel2->x() < -1024)
     {
         mb->backLabel2->hide();
         mb->backLabel2->move(mb->backLabel2->x() + (mb->backLabel2->width() * 2) - 1 , mb->backLabel2->y());
@@ -97,19 +104,19 @@ void MainWindow::backTimerHit()
 
 void MainWindow::midTimerHit()
 {
-    if (mb->midLabel->x() >= -400 && mb->midLabel2->x() >= -400)
+    if (mb->midLabel->x() >= -1024 && mb->midLabel2->x() >= -1024)
     {
         mb->midLabel->move(mb->midLabel->x() - 1, mb->midLabel->y());
         mb->midLabel2->move(mb->midLabel2->x() - 1, mb->midLabel2->y());
     }
-    else if (mb->midLabel->x() < -400)
+    else if (mb->midLabel->x() < -1024)
     {
         mb->midLabel->hide();
         mb->midLabel->move(mb->midLabel->x() + (mb->midLabel->width() * 2) -1 , mb->midLabel->y());
         mb->midLabel2->move(mb->midLabel2->x() - 1, mb->midLabel2->y());
         mb->midLabel->show();
     }
-    else if (mb->midLabel2->x() < -400)
+    else if (mb->midLabel2->x() < -1024)
     {
         mb->midLabel2->hide();
         mb->midLabel2->move(mb->midLabel2->x() + (mb->midLabel2->width() * 2) - 1, mb->midLabel2->y());
@@ -122,19 +129,19 @@ void MainWindow::midTimerHit()
 
 void MainWindow::frontTimerHit()
 {
-    if (mb->frontLabel->x() >= -400 && mb->frontLabel2->x() >= -400)
+    if (mb->frontLabel->x() >= -1024 && mb->frontLabel2->x() >= -1024)
     {
         mb->frontLabel->move(mb->frontLabel->x() - 1, mb->frontLabel->y());
         mb->frontLabel2->move(mb->frontLabel2->x() - 1, mb->frontLabel2->y());
     }
-    else if (mb->frontLabel->x() < -400)
+    else if (mb->frontLabel->x() < -1024)
     {
         mb->frontLabel->hide();
         mb->frontLabel->move(mb->frontLabel->x() + (mb->frontLabel->width() * 2) - 1, mb->frontLabel->y());
         mb->frontLabel2->move(mb->frontLabel2->x() - 1, mb->frontLabel2->y());
         mb->frontLabel->show();
     }
-    else if (mb->frontLabel2->x() < -400)
+    else if (mb->frontLabel2->x() < -1024)
     {
         mb->frontLabel2->hide();
         mb->frontLabel2->move(mb->frontLabel2->x() + (mb->frontLabel2->width() * 2) - 1, mb->frontLabel2->y());
@@ -155,12 +162,12 @@ void MainWindow::on_startBtn_clicked(){
     mb->pauseBtn->show();
 
     obstacleTimer = new QTimer(this);
-    obstacleTimer->setInterval(10);
+    obstacleTimer->setInterval(2);
     connect(obstacleTimer, SIGNAL(timeout()), this, SLOT(obstacleTimerHit()));
     obstacleTimer->start();
 
     spawningTimer = new QTimer(this);
-    spawningTimer->setInterval(1750);
+    spawningTimer->setInterval(3000);
     connect(spawningTimer, SIGNAL(timeout()), this, SLOT(spawningTimerHit()));
     spawningTimer->start();
 
@@ -184,12 +191,12 @@ void MainWindow:: on_loadBtn_clicked(){
     mb->pauseBtn->show();
 
     obstacleTimer = new QTimer(this);
-    obstacleTimer->setInterval(10);
+    obstacleTimer->setInterval(5);
     connect(obstacleTimer, SIGNAL(timeout()), this, SLOT(obstacleTimerHit()));
     obstacleTimer->start();
 
     spawningTimer = new QTimer(this);
-    spawningTimer->setInterval(1750);
+    spawningTimer->setInterval(2000);
     connect(spawningTimer, SIGNAL(timeout()), this, SLOT(spawningTimerHit()));
     spawningTimer->start();
 
@@ -261,7 +268,7 @@ void MainWindow:: on_pauseBtn_clicked(){
     frontTimer->stop();
     obstacleTimer->stop();
     spawningTimer->stop();
-    furtime->stop();
+    //furtime->stop();
     //cCat->catMovie->stop();
     /*for(int i = 0; i < Obstacle::instance().obstacles.size(); i++){
         QLabel * ob = Obstacle::instance().obstacles[i];
@@ -281,13 +288,35 @@ void MainWindow::obstacleTimerHit()
         Object * obj = new Object;
         obst = o.spawnedObstacles[i];
         obj = o.objects[i];
+        //std::string str = obj->getType();
+        //std::cout << str << "\n";
+        int hip = obj->getHealthImpact();
+        //std::cout << hip <<  "\n";
+        //std::cout << "CCAT HEALTH IS FIRST AT:   " << cCat->health << "\n";
         obst->move(obst->x() - 1, obst->y());
-
-        if (obst->geometry().intersects(cCat->cat->geometry()))
+//HERE IS COMMENTED OUT THE CODE FOR KILLING CAT AND STOPPING GAME
+        for (unsigned int j = 0; j < cCat->catSensors.size(); j++)
         {
-            cCat->health = cCat->health - obj->getHealthImpact();
+            QLabel * s = new QLabel(this);
+            s = cCat->catSensors.at(j);
+            if (obst->geometry().intersects(s->geometry()) && !obj->isCollided)
+            {
+                hurtTimer->start();
+
+                //didCollide = true;
+                obj->isCollided = true;
+                std::cout << "WE HAVE IMPACT" << "\n";
+                std::cout << "CCAT HEALTH BEFORE HIP : " << cCat->health << "\n";
+                cCat->health -= hip;
+                std::cout << "CCAT HEALTH IS AT :   " << cCat->health << "\n";
+                //hurtTimerHit();
+                //cCat->health = cCat->health - obj->getHealthImpact();
+                //break;
+            }
+
             if (cCat->health <= 0)
             {
+                std::cout << cCat->health << " IS CATS CURRENT HEALTH"<< "\n";
                 end = new QLabel(this);
                 end->setText("YOU LOSE");
                 end->showFullScreen();
@@ -300,26 +329,37 @@ void MainWindow::obstacleTimerHit()
                 obstacleTimer->stop();
                 spawningTimer->stop();
                 cCat->catMovie->stop();
-            }
-            else
-            {
-                hurtTimer->start();
-            }
 
+             }
+                /*else if (cCat->health > 0)
+                {
+                    hurtTimer->start();
+                }*/
+
+            }
         }
-    }
+
+
 
 }
 
 void MainWindow::hurtTimerHit()
 {
-    if (cCat->cat->isVisible())
+    hurtCounter++;
+
+    if (cCat->cat->isVisible() && hurtCounter < 12)
     {
         cCat->cat->hide();
     }
-    else
+    else if (!cCat->cat->isVisible() && hurtCounter < 12)
     {
         cCat->cat->show();
+    }
+    if (hurtCounter == 12)
+    {
+        cCat->cat->show();
+        hurtCounter = 0;
+        hurtTimer->stop();
     }
 }
 
@@ -343,7 +383,64 @@ void MainWindow::spawningTimerHit()
 
 void MainWindow::jumpTimerHit()
 {
-    if (cCat->gravity < 100)
+    cCat->counter++;
+    if (cCat->height < 200 && cCat->isClimbing)
+    {
+        cCat->speed--;
+        cCat->height++;
+        if (cCat->counter % 20 == 0)
+        {
+            jumpTimer->setInterval(jumpTimer->interval() + 1);
+            qDebug() << jumpTimer->interval() << endl;
+
+        }
+
+        cCat->cat->move(cCat->cat->x(), cCat->cat->y() - 1);
+        for (unsigned int i = 0; i < cCat->catSensors.size(); i++)
+        {
+            QLabel * s = new QLabel(this);
+            s = cCat->catSensors.at(i);
+            s->move(s->x(), s->y() - 1);
+        }
+    }
+    else if (cCat->height == 200)
+    {
+        cCat->isClimbing = false;
+        cCat->isFalling = true;
+        cCat->speed++;
+        cCat->height--;
+
+        cCat->cat->move(cCat->cat->x(), cCat->cat->y() + 1);
+    }
+    else if (cCat->height == 0)
+    {
+        cCat->isLanded = true;
+        cCat->isFalling = false;
+        //jumpTimer->setInterval(1);
+        jumpTimer->stop();
+    }
+    else if (cCat->height < 200 && cCat->isFalling && !cCat->isLanded)
+    {
+        cCat->speed++;
+        cCat->height--;
+        if (cCat->counter % 20 == 0)
+        {
+            jumpTimer->setInterval(jumpTimer->interval() - 1);
+            qDebug() << jumpTimer->interval() << endl;
+        }
+
+
+        cCat->cat->move(cCat->cat->x(), cCat->cat->y() + 1);
+        for (unsigned int i = 0; i < cCat->catSensors.size(); i++)
+        {
+            QLabel * s = new QLabel(this);
+            s = cCat->catSensors.at(i);
+            s->move(s->x(), s->y() + 1);
+        }
+
+    }
+
+    /*if (cCat->gravity < 100)
     {
         cCat->gravity += 1;
         cCat->cat->move(cCat->cat->x(),cCat->cat->y() - 1);
@@ -369,7 +466,7 @@ void MainWindow::jumpTimerHit()
             jumpTimer->stop();
         }
 
-    }
+    }*/
 }
 
 void MainWindow::keyPressEvent(QKeyEvent* event) {
@@ -377,6 +474,11 @@ void MainWindow::keyPressEvent(QKeyEvent* event) {
     switch(event->key())
     {
     case 87:
+        if (cCat->isLanded)
+        {
+            cCat->isLanded = false;
+            cCat->isClimbing = true;
+        }
 
         jumpTimer->start();
 
@@ -387,15 +489,19 @@ void MainWindow::keyPressEvent(QKeyEvent* event) {
 
         break;
     case 68:
-        furBall = new QLabel(this);
-        QPixmap fBall(":/furball2.png");
-        furBall->setPixmap(fBall);
-        furBall->setScaledContents(true);
-        furBall->setGeometry(cCat->cat->x() + 35 ,cCat->cat->y() + 30  ,30,20);
-        furBall->show();
-        furBalls.push_back(furBall);
-        furtime->start();
-        this->furTimeHit();
+        if (furBalls.size() < 2)
+        {
+            furBall = new QLabel(this);
+            QPixmap fBall(":/furball2.png");
+            furBall->setPixmap(fBall);
+            furBall->setScaledContents(true);
+            furBall->setGeometry(cCat->cat->x() + 145 ,cCat->cat->y() + 90  ,35,35);
+            furBall->show();
+            furBalls.push_back(furBall);
+            furTimer->start();
+            this->furTimerHit();
+        }
+
         break;
     }
 
@@ -422,13 +528,14 @@ void MainWindow::keyReleaseEvent(QKeyEvent * event)
 
 }
 
-void MainWindow::furTimeHit()
+void MainWindow::furTimerHit()
 {
     Obstacle& o = Obstacle::instance();
 
     for (unsigned int i = 0 ; i < furBalls.size(); i++)
     {
         QLabel * ball = furBalls[i];
+        ball->move(ball->x() + 2,ball->y());
         for (unsigned int j = 0; j < o.spawnedObstacles.size(); j++)
             {
                 QLabel * badGuy = new QLabel;
@@ -444,13 +551,13 @@ void MainWindow::furTimeHit()
                     delete ball;
                     ball = new QLabel(this);
                 }
-                else if (/*enemyExists && */badGuy->x() < -75)
+                if (/*enemyExists && */badGuy->x() < -75)
                 {
                     delete badGuy;
                     o.spawnedObstacles.erase(o.spawnedObstacles.cbegin());
                     badGuy = new QLabel(this);
                 }
-                else if (ball->x() > this->width())
+                if (ball->x() > this->width())
                 {
                     delete ball;
                     furBalls.erase(furBalls.cbegin());
@@ -511,7 +618,7 @@ void MainWindow::on_resumeBtn_clicked(){
     frontTimer->start();
     obstacleTimer->start();
     spawningTimer->start();
-    furtime->start();
+    //furtime->start();
 }
 
 void MainWindow::on_saveBtn_clicked(){

@@ -24,6 +24,7 @@ protected:
     //QLabel * label;
 
 public:
+    bool isCollided;
     int getX()
     {return x;}
     void setX(int newX) {x = newX;}
@@ -51,10 +52,27 @@ class CuriousCat : public Object
 {
 public:
     //int jumpSpeed;
-    int gravity;
+    //int gravity;
+    bool isLanded;
+    bool isClimbing;
+    bool isFalling;
+    int speed;
+    int height;
+    int counter;
 
     QLabel * cat;
     QMovie * catMovie;
+    std::vector<QLabel*>catSensors;
+    const int sensorW = 10;
+    const int sensorH = 10;
+    const int forHeadX = 268;
+    const int forHeadY = 514;
+    const int mouthX = 274;
+    const int mouthY = 550;
+    const int frontPawX = 256;
+    const int frontPawY = 591;
+    const int tailX = 179;
+    const int tailY = 537;
     explicit CuriousCat(QWidget * parent);
 
     void saveGame(QTextStream &out);
@@ -93,6 +111,7 @@ class MadDog :public Object
 public:
     explicit MadDog();
     //QTimer * dogTimer;
+
 
 
     void saveGame(QTextStream &out);

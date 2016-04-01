@@ -30,11 +30,14 @@ public:
     QTimer * midTimer;
     QTimer * frontTimer;
     QTimer * obstacleTimer;
+    bool didCollide;
     QTimer * spawningTimer;
-    QTimer * furtime;
+    QTimer * furTimer;
 
     QTimer * jumpTimer;
+
     QTimer * hurtTimer;
+    int hurtCounter;
 
     QLabel * end = nullptr;
 
@@ -51,7 +54,7 @@ public slots:
     void frontTimerHit();
     void obstacleTimerHit();
     void spawningTimerHit();
-    void furTimeHit();
+    void furTimerHit();
     void jumpTimerHit();
     void hurtTimerHit();
 
