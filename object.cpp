@@ -1,8 +1,8 @@
 #include <algorithm>
 #include <string>
-
 #include <QFile>
 #include <QTextStream>
+#include <QDebug>
 
 #include "object.h"
 #include "event.h"
@@ -28,23 +28,74 @@ void Object::loadGame(QFile &file) {
 
 CuriousCat::CuriousCat(QWidget *parent)
 {
-    setX(50);
-    setY(176);
-    setW(75);
-    setH(75);
+    setX(128);
+    setY(450);
+    setW(192);
+    setH(192);
     setType("CuriousCat");
     //jumpSpeed = 100;
-    gravity = 0;
+    //gravity = 0;
+    height = 0;
+    speed = 200;
+    isClimbing = false;
+    isFalling = false;
+    isLanded = true;
+    counter = 0;
+
+
 
 
     catMovie = new QMovie(":/cat.gif");
     cat = new QLabel(parent);
     cat->setMovie(catMovie);
     catMovie->start();
-    cat->setGeometry(50,176, 75, 75);
+    cat->setGeometry(128,450, 192, 192);
     cat->setScaledContents(true);
 
     cat->show();
+
+
+    QLabel * forHeadSensor = new QLabel(parent);
+    QPixmap sensor(":/furball2.png");
+    forHeadSensor->setGeometry(forHeadX,forHeadY,sensorW, sensorH);
+
+    forHeadSensor->setPixmap(sensor);
+    forHeadSensor->setScaledContents(true);
+    catSensors.push_back(forHeadSensor);
+    forHeadSensor->show();
+
+    QLabel * mouthSensor = new QLabel(parent);
+    mouthSensor->setGeometry(mouthX, mouthY, sensorW, sensorH);
+    mouthSensor->setPixmap(sensor);
+    mouthSensor->setScaledContents(true);
+    catSensors.push_back(mouthSensor);
+    mouthSensor->show();
+
+
+    QLabel * frontPawSensor = new QLabel(parent);
+    frontPawSensor->setGeometry(frontPawX,frontPawY, sensorW,sensorH);
+    frontPawSensor->setPixmap(sensor);
+    frontPawSensor->setScaledContents(true);
+    catSensors.push_back(frontPawSensor);
+    frontPawSensor->show();
+
+
+    QLabel * backPawSensor = new QLabel(parent);
+    backPawSensor->setGeometry(frontPawX - 25, frontPawY, sensorW, sensorH);
+    backPawSensor->setPixmap(sensor);
+    backPawSensor->setScaledContents(true);
+    catSensors.push_back(backPawSensor);
+    backPawSensor->show();
+
+    QLabel * tailSensor = new QLabel(parent);
+    tailSensor->setGeometry(tailX, tailY, sensorW, sensorH);
+    tailSensor->setPixmap(sensor);
+    tailSensor->setScaledContents(true);
+    catSensors.push_back(tailSensor);
+    tailSensor->show();
+
+
+
 }
 
 //saves a dog
@@ -60,6 +111,7 @@ MadDog::MadDog()
     setH(75);
     setType("MadDog");
     setHealthImpact(50);
+    isCollided = false;
     //isDog = true;
     /*dogMovie = new QMovie(":/dog.gif");
     dog = new QLabel(parent);
@@ -114,6 +166,7 @@ LawnMower::LawnMower()
     setH(50);
     setType("LawnMower");
     setHealthImpact(25);
+    isCollided = false;
 }
 
 //saves a lawnmower
@@ -139,6 +192,7 @@ Hole::Hole()
     setH(300);
     setType("Hole");
     setHealthImpact(100);
+    isCollided = false;
 }
 
 
