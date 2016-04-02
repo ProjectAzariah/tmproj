@@ -13,13 +13,14 @@
 #include "background.h"
 #include "event.h"
 
+using namespace std;
 
+int MainWindow::score = 0;
+int MainWindow::health = 100;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    gameModel = GameModel::instance();
-
     ui->setupUi(this);
     mb = new MovingBackground(this);
 
@@ -182,78 +183,50 @@ void MainWindow::on_startBtn_clicked(){
 //ATTENTION: THIS IS WHERE I PUT THE CODE FOR THE GAME TO STOP WHEN THE CAT RUNS INTO
 
 void MainWindow:: on_loadBtn_clicked(){
-    started=true;
-    mb->healthLabel->show();
-    mb->scoreLabel->show();
-    mb->startBtn->setDisabled(true);
-    mb->startBtn->hide();
-    mb->loadBtn->hide();
-    mb->introLabel->hide();
-    mb->pauseBtn->show();
+        started=true;
+        mb->healthLabel->show();
+        mb->scoreLabel->show();
+        mb->startBtn->setDisabled(true);
+        mb->startBtn->hide();
+        mb->loadBtn->hide();
+        mb->introLabel->hide();
+        mb->pauseBtn->show();
 
-    obstacleTimer = new QTimer(this);
-    obstacleTimer->setInterval(5);
-    connect(obstacleTimer, SIGNAL(timeout()), this, SLOT(obstacleTimerHit()));
-    obstacleTimer->start();
+        Obstacle& o = Obstacle::instance();
+        o.obstacles.clear();
+        o.objects.clear();
+        o.spawnedObstacles.clear();
 
-    spawningTimer = new QTimer(this);
-    spawningTimer->setInterval(2000);
-    connect(spawningTimer, SIGNAL(timeout()), this, SLOT(spawningTimerHit()));
-    spawningTimer->start();
+        QFile data("data.txt");
 
-    Obstacle& o = Obstacle::instance();
+        if(data.open(QIODevice::ReadOnly)){
+                QString num = data.readLine();
+                int numObjs = num.toInt();
+                health = QString(data.readLine()).toInt();
+                score = QString(data.readLine()).toInt();
+                Object* obj = new Object();
 
-    MadDog();
-    LawnMower();
-    Hole();
+                for(int i=0; i < numObjs; i++){
+                    //obj->loadGame(data);
+                    QString s = data.readLine();
 
-    o.obstacles.clear();
+                    QString str = data.readLine();
+                    int x = str.toInt();
+                    QString str2 = data.readLine();
+                    int y = str2.toInt();
 
-    QFile data("data.txt");
+                    obj->setType(s.toStdString());
+                    obj->setX(x);
+                    obj->setY(y);
+                    if(obj->getType() == "MadDog"){
 
-    if(data.open(QIODevice::ReadWrite)){
-            QString num = data.readLine();
-            int numObjs = num.toInt();
-            gameModel->setScore(QString(data.readLine()).toInt());
-            gameModel->setScore(QString(data.readLine()).toInt());
-            Object* obj = new Object();
+                    }else if(obj->getType() == "Lawnmower"){
 
-            for(int i=0; i < numObjs; i++){
-                obj->loadGame(data);
-                if(obj->getType() == "MadDog"){
-                    QLabel * madDogLabel = new QLabel(this);
-                    QMovie * dogMovie = new QMovie(":/dog.gif");
-                    madDogLabel->setMovie(dogMovie);
-                    madDogLabel->setGeometry(this->width(),200,50,50);
-                    madDogLabel->setScaledContents(true);
-                    dogMovie->start();
-                    madDogLabel->hide();
-                    //madDogLabel->show();
-                    o.obstacles.push_back(madDogLabel);
-                }else if(obj->getType() == "Lawnmower"){
-                    QLabel* lawnMowerLabel = new QLabel(this);
-                    QPixmap mower(":/lawnmower2.png");
-                    lawnMowerLabel->setPixmap(mower);
-                    lawnMowerLabel->setGeometry(this->width(), 201, 50,50);
-                    lawnMowerLabel->setScaledContents(true);
-                    lawnMowerLabel->hide();
-                    //lawnMowerLabel->show();
-                    o.obstacles.push_back(lawnMowerLabel);
-                }else if(obj->getType() == "Hole"){
-                    QLabel* holeLabel = new QLabel(this);
-                    QPixmap hole(":/hole.png");
-                    holeLabel->setPixmap(hole);
-                    holeLabel->setGeometry(this->width(),202,50,300);
-                    holeLabel->setScaledContents(true);
-                    holeLabel->hide();
-                    //holeLabel->show();
-                    o.obstacles.push_back(holeLabel);
-                    //std::random_shuffle(o.obstacles.begin(), o.obstacles.end());
+                    }else if(obj->getType() == "Hole"){
+
+                    }
                 }
-                }
-            }
-
-
+        }
 }
 
 void MainWindow:: on_pauseBtn_clicked(){
@@ -377,9 +350,9 @@ void MainWindow::spawningTimerHit()
     this->obstacleTimerHit();
 
     if (started){
-        gameModel->AddScore();
+        score+=2;
     }
-    mb->scoreLabel->setText("Score: "+ QString::number(gameModel->getScore()));
+    mb->scoreLabel->setText("Score: "+ QString::number(score));
 }
 
 void MainWindow::jumpTimerHit()
@@ -587,13 +560,13 @@ void MainWindow::on_quitBtn_clicked(){
 }
 
 void MainWindow::on_playAgainBtn_clicked(){
-    gameModel->setHealth(100);
-    gameModel->setScore(0);
+    health=100;
+    score=0;
     mb->gameOverLabel->hide();
     mb->logoLabel->show();
     mb->endScreen->hide();
     mb->playAgainBtn->hide();
-    mb->scoreLabel->setText("Score: " + QString::number(gameModel->getScore()));
+    mb->scoreLabel->setText("Score: " + QString::number(score));
     mb->scoreLabel->show();
     mb->healthLabel->show();
     mb->quitBtn->hide();
@@ -624,12 +597,12 @@ void MainWindow::on_resumeBtn_clicked(){
 
 void MainWindow::on_saveBtn_clicked(){
         QFile data("data.txt");
-        if(data.open(QIODevice::ReadWrite)){
+        if(data.open(QIODevice::WriteOnly | QFile::Truncate)){
             QTextStream out(&data);
 
             out << Obstacle::instance().objects.size() << "\n";
-            out << gameModel->getHealth() << "\n";
-            out << gameModel->getScore() << "\n";
+            out << health << "\n";
+            out << score << "\n";
 
             for(Object *obj : Obstacle::instance().objects) {
                 obj->saveGame(out);
