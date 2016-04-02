@@ -4,9 +4,13 @@
 
 using namespace std;
 
-gameModel::gameModel()
-{
+GameModel* GameModel::gameModel = nullptr;
 
+GameModel* GameModel::instance(){
+    if(gameModel == nullptr){
+        gameModel = new GameModel;
+    }
+    return gameModel;
 }
 
 

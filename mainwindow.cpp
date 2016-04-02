@@ -13,12 +13,13 @@
 #include "background.h"
 #include "event.h"
 
-int MainWindow::score = 0;
-int MainWindow::health = 100;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    gameModel = GameModel::instance();
+
     ui->setupUi(this);
     mb = new MovingBackground(this);
 
@@ -213,8 +214,8 @@ void MainWindow:: on_loadBtn_clicked(){
     if(data.open(QIODevice::ReadWrite)){
             QString num = data.readLine();
             int numObjs = num.toInt();
-            health = QString(data.readLine()).toInt();
-            score = QString(data.readLine()).toInt();
+            gameModel->setScore(QString(data.readLine()).toInt());
+            gameModel->setScore(QString(data.readLine()).toInt());
             Object* obj = new Object();
 
             for(int i=0; i < numObjs; i++){
@@ -376,9 +377,9 @@ void MainWindow::spawningTimerHit()
     this->obstacleTimerHit();
 
     if (started){
-        score+=2;
+        gameModel->AddScore();
     }
-    mb->scoreLabel->setText("Score: "+ QString::number(score));
+    mb->scoreLabel->setText("Score: "+ QString::number(gameModel->getScore()));
 }
 
 void MainWindow::jumpTimerHit()
@@ -586,13 +587,13 @@ void MainWindow::on_quitBtn_clicked(){
 }
 
 void MainWindow::on_playAgainBtn_clicked(){
-    health=100;
-    score=0;
+    gameModel->setHealth(100);
+    gameModel->setScore(0);
     mb->gameOverLabel->hide();
     mb->logoLabel->show();
     mb->endScreen->hide();
     mb->playAgainBtn->hide();
-    mb->scoreLabel->setText("Score: " + QString::number(score));
+    mb->scoreLabel->setText("Score: " + QString::number(gameModel->getScore()));
     mb->scoreLabel->show();
     mb->healthLabel->show();
     mb->quitBtn->hide();
@@ -627,8 +628,8 @@ void MainWindow::on_saveBtn_clicked(){
             QTextStream out(&data);
 
             out << Obstacle::instance().objects.size() << "\n";
-            out << health << "\n";
-            out << score << "\n";
+            out << gameModel->getHealth() << "\n";
+            out << gameModel->getScore() << "\n";
 
             for(Object *obj : Obstacle::instance().objects) {
                 obj->saveGame(out);

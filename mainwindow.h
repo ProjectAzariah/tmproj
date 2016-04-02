@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QLabel>
 #include "object.h"
+#include "gamemodel.h"
 
 class MovingBackground;
 
@@ -14,7 +15,8 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
+private:
+    GameModel* gameModel;
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
