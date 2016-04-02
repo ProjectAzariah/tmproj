@@ -13,14 +13,13 @@
 #include "background.h"
 #include "event.h"
 
-using namespace std;
 
-int MainWindow::score = 0;
-int MainWindow::health = 100;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    gameModel = GameModel::instance();
+
     ui->setupUi(this);
     mb = new MovingBackground(this);
 
@@ -183,50 +182,53 @@ void MainWindow::on_startBtn_clicked(){
 //ATTENTION: THIS IS WHERE I PUT THE CODE FOR THE GAME TO STOP WHEN THE CAT RUNS INTO
 
 void MainWindow:: on_loadBtn_clicked(){
-        started=true;
-        mb->healthLabel->show();
-        mb->scoreLabel->show();
-        mb->startBtn->setDisabled(true);
-        mb->startBtn->hide();
-        mb->loadBtn->hide();
-        mb->introLabel->hide();
-        mb->pauseBtn->show();
+    started=true;
+    mb->healthLabel->show();
+    mb->scoreLabel->show();
+    mb->startBtn->setDisabled(true);
+    mb->startBtn->hide();
+    mb->loadBtn->hide();
+    mb->introLabel->hide();
+    mb->pauseBtn->show();
 
-        Obstacle& o = Obstacle::instance();
-        o.obstacles.clear();
-        o.objects.clear();
-        o.spawnedObstacles.clear();
+    Obstacle& o = Obstacle::instance();
 
-        QFile data("data.txt");
+    o.obstacles.clear();
+    o.objects.clear();
+    o.spawnedObstacles.clear();
 
-        if(data.open(QIODevice::ReadOnly)){
-                QString num = data.readLine();
-                int numObjs = num.toInt();
-                health = QString(data.readLine()).toInt();
-                score = QString(data.readLine()).toInt();
-                Object* obj = new Object();
+    QFile data("data.txt");
 
-                for(int i=0; i < numObjs; i++){
-                    //obj->loadGame(data);
-                    QString s = data.readLine();
+    if(data.open(QIODevice::ReadOnly)){
+            QString num = data.readLine();
+            int numObjs = num.toInt();
+            gameModel->setHealth(QString(data.readLine()).toInt());
+            gameModel->setScore(QString(data.readLine()).toInt());
+            mb->scoreLabel->setText("Score: " + QString::number(gameModel->getScore()));
+            Object* obj = new Object();
 
-                    QString str = data.readLine();
-                    int x = str.toInt();
-                    QString str2 = data.readLine();
-                    int y = str2.toInt();
+            for(int i=0; i < numObjs; i++){
+                //obj->loadGame(data);
+                QString s = data.readLine();
 
-                    obj->setType(s.toStdString());
-                    obj->setX(x);
-                    obj->setY(y);
-                    if(obj->getType() == "MadDog"){
+                QString str = data.readLine();
+                int x = str.toInt();
+                QString str2 = data.readLine();
+                int y = str2.toInt();
 
-                    }else if(obj->getType() == "Lawnmower"){
+                obj->setType(s.toStdString());
+                obj->setX(x);
+                obj->setY(y);
+                if(obj->getType() == "MadDog"){
 
-                    }else if(obj->getType() == "Hole"){
+                }else if(obj->getType() == "Lawnmower"){
 
-                    }
+                }else if(obj->getType() == "Hole"){
+
                 }
-        }
+            }
+            }
+
 }
 
 void MainWindow:: on_pauseBtn_clicked(){
@@ -350,9 +352,9 @@ void MainWindow::spawningTimerHit()
     this->obstacleTimerHit();
 
     if (started){
-        score+=2;
+        gameModel->AddScore();
     }
-    mb->scoreLabel->setText("Score: "+ QString::number(score));
+    mb->scoreLabel->setText("Score: "+ QString::number(gameModel->getScore()));
 }
 
 void MainWindow::jumpTimerHit()
@@ -560,13 +562,13 @@ void MainWindow::on_quitBtn_clicked(){
 }
 
 void MainWindow::on_playAgainBtn_clicked(){
-    health=100;
-    score=0;
+    gameModel->setHealth(100);
+    gameModel->setScore(0);
     mb->gameOverLabel->hide();
     mb->logoLabel->show();
     mb->endScreen->hide();
     mb->playAgainBtn->hide();
-    mb->scoreLabel->setText("Score: " + QString::number(score));
+    mb->scoreLabel->setText("Score: " + QString::number(gameModel->getScore()));
     mb->scoreLabel->show();
     mb->healthLabel->show();
     mb->quitBtn->hide();
@@ -597,12 +599,12 @@ void MainWindow::on_resumeBtn_clicked(){
 
 void MainWindow::on_saveBtn_clicked(){
         QFile data("data.txt");
-        if(data.open(QIODevice::WriteOnly | QFile::Truncate)){
+        if(data.open(QIODevice::ReadWrite | QFile::Truncate)){
             QTextStream out(&data);
 
             out << Obstacle::instance().objects.size() << "\n";
-            out << health << "\n";
-            out << score << "\n";
+            out << gameModel->getHealth() << "\n";
+            out << gameModel->getScore() << "\n";
 
             for(Object *obj : Obstacle::instance().objects) {
                 obj->saveGame(out);
