@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
+#include <QDir>
 #include <iostream>
 
 #include "mainwindow.h"
@@ -69,6 +70,22 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(jumpTimer, SIGNAL(timeout()), this, SLOT(jumpTimerHit()));
 
     didCollide = false;
+
+    sounds = new sound();
+
+
+    songs = {"play_the_game.mp3","Pixel adventures.mp3","random_silly_chip_song.mp3"};
+    std::random_shuffle(songs.begin(),songs.end());
+    song = songs[0];
+
+    playList.addMedia(QUrl::fromLocalFile(QDir().absoluteFilePath(song)));
+
+    playList.setPlaybackMode(QMediaPlaylist::Loop);
+    playList.setCurrentIndex(1);
+    player.setPlaylist(&playList);
+    player.setVolume(50);
+    player.play();
+
 
     cCat =  new CuriousCat(this);
 }
@@ -165,7 +182,7 @@ void MainWindow::on_startBtn_clicked(){
     mb->cheatBtn->show();
 
     obstacleTimer = new QTimer(this);
-    obstacleTimer->setInterval(2);
+    obstacleTimer->setInterval(1);
     connect(obstacleTimer, SIGNAL(timeout()), this, SLOT(obstacleTimerHit()));
     obstacleTimer->start();
 
@@ -452,6 +469,7 @@ void MainWindow::keyPressEvent(QKeyEvent* event) {
     switch(event->key())
     {
     case 87:
+        sounds->jump.play();
         if (cCat->isLanded)
         {
             cCat->isLanded = false;
@@ -469,6 +487,7 @@ void MainWindow::keyPressEvent(QKeyEvent* event) {
     case 68:
         if (furBalls.size() < 2)
         {
+            sounds->shoot.play();
             furBall = new QLabel(this);
             QPixmap fBall(":/furball2.png");
             furBall->setPixmap(fBall);

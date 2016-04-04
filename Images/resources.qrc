@@ -1,24 +1,27 @@
 <RCC>
     <qresource prefix="/">
         <file>cat.gif</file>
+        <file>cheat.png</file>
         <file>dog.gif</file>
         <file>duck.png</file>
         <file>fireball2.0.png</file>
-        <file>Ground_(front_layer).png</file>
-        <file>lawnmower2.png</file>
-        <file>Sky_back_layer.png</file>
-        <file>Vegetation_(middle_layer).png</file>
         <file>furball2.png</file>
-        <file>hole.png</file>
-        <file>cheat.png</file>
+        <file>gameover.png</file>
+        <file>Ground_(front_layer).png</file>
         <file>heart.png</file>
+        <file>hole.png</file>
+        <file>lawnmower2.png</file>
         <file>load.png</file>
         <file>logo.png</file>
-        <file>start.png</file>
+        <file>mario3.png</file>
+        <file>ogg_file.wav</file>
         <file>playagain.png</file>
-        <file>gameover.png</file>
         <file>quit.png</file>
         <file>resume.png</file>
         <file>save.png</file>
+        <file>Sky_back_layer.png</file>
+        <file>start.png</file>
+        <file>Vegetation_(middle_layer).png</file>
+        <file>shoot.wav</file>
     </qresource>
 </RCC>

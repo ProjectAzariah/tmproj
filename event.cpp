@@ -50,7 +50,7 @@ QLabel* Obstacle::spawnObstacles(QWidget *parent)
     QLabel* holeLabel = new QLabel(parent);
     QPixmap hole(":/hole.png");
     holeLabel->setPixmap(hole);
-    holeLabel->setGeometry(parent->width(),517,128,768);
+    holeLabel->setGeometry(parent->width(),615,128,768);
     holeLabel->setScaledContents(true);
     holeLabel->hide();
     //holeLabel->show();
@@ -72,7 +72,7 @@ QLabel* Obstacle::spawnObstacles(QWidget *parent)
         obj->setHealthImpact(25);
         objects.push_back(obj);
     }
-    else if (ob->y() == 517)
+    else if (ob->y() == 615)
     {
         Object * obj = new Hole();
         obj->setHealthImpact(100);

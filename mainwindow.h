@@ -3,6 +3,10 @@
 
 #include <QMainWindow>
 #include <QLabel>
+#include <vector>
+#include <QMediaPlayer>
+#include <QMediaPlaylist>
+#include "sound.h"
 #include "object.h"
 #include "gamemodel.h"
 
@@ -22,6 +26,8 @@ public:
     ~MainWindow();
     MovingBackground *mb;
     CuriousCat * cCat;
+    sound * sounds;
+
     QLabel * furBall;
     std::vector<QLabel*> furBalls;
     static int score, health ;
@@ -42,6 +48,16 @@ public:
     QTimer * hurtTimer;
     int hurtCounter;
 
+<<<<<<< HEAD
+    QLabel * end = nullptr;
+    std::vector<QString> songs;
+    QString song;
+
+    QMediaPlayer player;
+    QMediaPlaylist  playList;
+
+=======
+>>>>>>> upstream/master
 public slots:
     void on_startBtn_clicked();
     void on_cheatBtn_clicked();
