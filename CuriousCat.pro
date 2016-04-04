@@ -4,10 +4,12 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui \
+            network \
+            multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
+QTPLUGIN += dsengine qtmedia_audioengine
 TARGET = CuriousCat
 TEMPLATE = app
 
@@ -19,7 +21,8 @@ SOURCES += main.cpp\
     background.cpp \
     event.cpp \
     highscore.cpp \
-    object.cpp
+    object.cpp \
+    sound.cpp
 
 HEADERS  += mainwindow.h \
     danger.h \
@@ -27,11 +30,13 @@ HEADERS  += mainwindow.h \
     background.h \
     event.h \
     object.h \
-    highscore.h
+    highscore.h \
+    sound.h
 
 FORMS    += mainwindow.ui
 
 RESOURCES += \
+    Images/resources.qrc \
     Images/resources.qrc
 QMAKE_CXXFLAGS += -std=c++0x
 

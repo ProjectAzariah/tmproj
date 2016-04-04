@@ -70,7 +70,7 @@ public:
     const int mouthX = 274;
     const int mouthY = 550;
     const int frontPawX = 256;
-    const int frontPawY = 591;
+    const int frontPawY = 606;
     const int tailX = 179;
     const int tailY = 537;
     explicit CuriousCat(QWidget * parent);

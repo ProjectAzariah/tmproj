@@ -81,7 +81,7 @@ CuriousCat::CuriousCat(QWidget *parent)
 
 
     QLabel * backPawSensor = new QLabel(parent);
-    backPawSensor->setGeometry(frontPawX - 25, frontPawY, sensorW, sensorH);
+    backPawSensor->setGeometry(frontPawX - 75, frontPawY, sensorW, sensorH);
     backPawSensor->setPixmap(sensor);
     backPawSensor->setScaledContents(true);
     catSensors.push_back(backPawSensor);

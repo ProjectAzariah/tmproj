@@ -3,6 +3,10 @@
 
 #include <QMainWindow>
 #include <QLabel>
+#include <vector>
+#include <QMediaPlayer>
+#include <QMediaPlaylist>
+#include "sound.h"
 #include "object.h"
 
 class MovingBackground;
@@ -20,6 +24,8 @@ public:
     ~MainWindow();
     MovingBackground *mb;
     CuriousCat * cCat;
+    sound * sounds;
+
     QLabel * furBall;
     std::vector<QLabel*> furBalls;
     static int score, health ;
@@ -40,6 +46,11 @@ public:
     int hurtCounter;
 
     QLabel * end = nullptr;
+    std::vector<QString> songs;
+    QString song;
+
+    QMediaPlayer player;
+    QMediaPlaylist  playList;
 
 public slots:
     void on_startBtn_clicked();
