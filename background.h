@@ -28,6 +28,7 @@ public:
     QLabel * frontLabel2;
     QTextEdit * introLabel;
     QPushButton* pauseBtn;
+    QPushButton* cheatBtn;
     QPushButton * startBtn;
     QPushButton * loadBtn;
     QLabel* scoreLabel;
@@ -37,6 +38,8 @@ public:
     QPushButton * resumeBtn;
     QTextEdit * endScreen;
     QPushButton * playAgainBtn;
+    QLabel * youLoseLbl;
+
 
 
 

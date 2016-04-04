@@ -26,6 +26,7 @@ public:
     std::vector<QLabel*> furBalls;
     static int score, health ;
     bool started = false;
+    bool cheating = false;
 
     //background timers
     QTimer * backTimer;
@@ -41,10 +42,9 @@ public:
     QTimer * hurtTimer;
     int hurtCounter;
 
-    QLabel * end = nullptr;
-
 public slots:
     void on_startBtn_clicked();
+    void on_cheatBtn_clicked();
     void on_pauseBtn_clicked();
     void on_quitBtn_clicked();    
     void on_resumeBtn_clicked();

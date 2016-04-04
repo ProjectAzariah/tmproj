@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mb->resumeBtn, SIGNAL(clicked()), SLOT(on_resumeBtn_clicked()));
     connect(mb->saveBtn, SIGNAL(clicked()), SLOT(on_saveBtn_clicked()));
     connect(mb->loadBtn, SIGNAL(clicked()), SLOT(on_loadBtn_clicked()));
+    connect(mb->cheatBtn, SIGNAL(clicked()), SLOT(on_cheatBtn_clicked()));
 
     //background timers
     backTimer = new QTimer(parent);
@@ -161,6 +162,7 @@ void MainWindow::on_startBtn_clicked(){
     mb->loadBtn->hide();
     mb->introLabel->hide();
     mb->pauseBtn->show();
+    mb->cheatBtn->show();
 
     obstacleTimer = new QTimer(this);
     obstacleTimer->setInterval(2);
@@ -271,6 +273,7 @@ void MainWindow::obstacleTimerHit()
         //std::cout << "CCAT HEALTH IS FIRST AT:   " << cCat->health << "\n";
         obst->move(obst->x() - 1, obst->y());
 //HERE IS COMMENTED OUT THE CODE FOR KILLING CAT AND STOPPING GAME
+        if(!cheating){
         for (unsigned int j = 0; j < cCat->catSensors.size(); j++)
         {
             QLabel * s = new QLabel(this);
@@ -284,6 +287,7 @@ void MainWindow::obstacleTimerHit()
                 std::cout << "WE HAVE IMPACT" << "\n";
                 std::cout << "CCAT HEALTH BEFORE HIP : " << cCat->health << "\n";
                 cCat->health -= hip;
+                mb->healthLabel->setText("Health: " + QString::number(cCat->health) +"%");
                 std::cout << "CCAT HEALTH IS AT :   " << cCat->health << "\n";
                 //hurtTimerHit();
                 //cCat->health = cCat->health - obj->getHealthImpact();
@@ -292,30 +296,28 @@ void MainWindow::obstacleTimerHit()
 
             if (cCat->health <= 0)
             {
-                std::cout << cCat->health << " IS CATS CURRENT HEALTH"<< "\n";
-                end = new QLabel(this);
-                end->setText("YOU LOSE");
-                end->showFullScreen();
-                end->setGeometry(cCat->cat->x(),cCat->cat->y() - 75, 100,100);
-                end->setScaledContents(true);
-                end->show();
+                std::cout << cCat->health << " IS CATS CURRENT HEALTH"<< "\n";                
+                mb->youLoseLbl->setGeometry(cCat->cat->x(),cCat->cat->y() - 75, 100,100);
+                mb->youLoseLbl->show();
                 backTimer->stop();
                 midTimer->stop();
                 frontTimer->stop();
                 obstacleTimer->stop();
                 spawningTimer->stop();
                 cCat->catMovie->stop();
-
              }
                 /*else if (cCat->health > 0)
                 {
                     hurtTimer->start();
                 }*/
 
-            }
+           }
         }
+       }
 
-
+        if(cCat->health <= 0){
+            mb->quitBtn->click();
+        }
 
 }
 
@@ -545,10 +547,12 @@ void MainWindow::furTimerHit()
 
 void MainWindow::on_quitBtn_clicked(){
     mb->resumeBtn->hide();
+    mb->pauseBtn->hide();
     mb->logoLabel->hide();;
     mb->healthLabel->hide();
     mb->scoreLabel->hide();
     mb->quitBtn->hide();
+    mb->youLoseLbl->hide();
     mb->endScreen->show();
     mb->gameOverLabel->show();
     mb->endScreen->setText("Top Scores: ------\n                ------\n                 ------\nYour Score:" + mb->scoreLabel->text());
@@ -565,19 +569,21 @@ void MainWindow::on_playAgainBtn_clicked(){
     gameModel->setHealth(100);
     gameModel->setScore(0);
     mb->gameOverLabel->hide();
-    mb->logoLabel->show();
-    mb->endScreen->hide();
     mb->playAgainBtn->hide();
+    mb->endScreen->hide();
+    //mb->quitBtn->hide();
+    //mb->saveBtn->hide();
+    //mb->resumeBtn->hide();
+    mb->logoLabel->show();
     mb->scoreLabel->setText("Score: " + QString::number(gameModel->getScore()));
     mb->scoreLabel->show();
     mb->healthLabel->show();
-    mb->quitBtn->hide();
-    mb->saveBtn->hide();
-    mb->resumeBtn->hide();
     cCat->cat->show();
     backTimer->start();
     midTimer->start();
     frontTimer->start();
+    cCat->catMovie->start();
+    mb->youLoseLbl->hide();
     mb->startBtn->clicked();
 }
 
@@ -612,4 +618,11 @@ void MainWindow::on_saveBtn_clicked(){
         }
 
     mb->quitBtn->click();
+}
+void MainWindow::on_cheatBtn_clicked(){
+    if(cheating){
+        cheating = false;
+    } else {
+        cheating = true;
+    }
 }
