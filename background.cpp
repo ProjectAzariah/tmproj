@@ -122,6 +122,12 @@ MovingBackground::MovingBackground(QWidget *parent)
     pauseBtn->setGeometry(160,40,90, 30);
     pauseBtn->hide();
 
+    //makes cheat button
+    cheatBtn = new QPushButton(parent);
+    cheatBtn->setText("&CHEAT");
+    cheatBtn->setGeometry(160,100,90, 30);
+    cheatBtn->hide();
+
     //makes resume button
     QPixmap resume(":/resume.png");
     resumeBtn = new QPushButton(parent);
@@ -166,4 +172,10 @@ MovingBackground::MovingBackground(QWidget *parent)
     playAgainBtn->setGeometry(130,150,150, 45);
     playAgainBtn->setIconSize(start.rect().size());
     playAgainBtn->hide();
+
+    youLoseLbl = new QLabel(parent);
+    youLoseLbl->setText("YOU LOSE");
+    youLoseLbl->showFullScreen();
+    youLoseLbl->setScaledContents(true);
+    youLoseLbl->hide();
 }

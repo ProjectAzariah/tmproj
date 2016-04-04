@@ -14,12 +14,13 @@
 #include "background.h"
 #include "event.h"
 
-int MainWindow::score = 0;
-int MainWindow::health = 100;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    gameModel = GameModel::instance();
+
     ui->setupUi(this);
     mb = new MovingBackground(this);
 
@@ -30,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mb->resumeBtn, SIGNAL(clicked()), SLOT(on_resumeBtn_clicked()));
     connect(mb->saveBtn, SIGNAL(clicked()), SLOT(on_saveBtn_clicked()));
     connect(mb->loadBtn, SIGNAL(clicked()), SLOT(on_loadBtn_clicked()));
+    connect(mb->cheatBtn, SIGNAL(clicked()), SLOT(on_cheatBtn_clicked()));
 
     //background timers
     backTimer = new QTimer(parent);
@@ -177,6 +179,7 @@ void MainWindow::on_startBtn_clicked(){
     mb->loadBtn->hide();
     mb->introLabel->hide();
     mb->pauseBtn->show();
+    mb->cheatBtn->show();
 
     obstacleTimer = new QTimer(this);
     obstacleTimer->setInterval(1);
@@ -207,68 +210,43 @@ void MainWindow:: on_loadBtn_clicked(){
     mb->introLabel->hide();
     mb->pauseBtn->show();
 
-    obstacleTimer = new QTimer(this);
-    obstacleTimer->setInterval(5);
-    connect(obstacleTimer, SIGNAL(timeout()), this, SLOT(obstacleTimerHit()));
-    obstacleTimer->start();
-
-    spawningTimer = new QTimer(this);
-    spawningTimer->setInterval(2000);
-    connect(spawningTimer, SIGNAL(timeout()), this, SLOT(spawningTimerHit()));
-    spawningTimer->start();
-
     Obstacle& o = Obstacle::instance();
 
-    MadDog();
-    LawnMower();
-    Hole();
-
     o.obstacles.clear();
+    o.objects.clear();
+    o.spawnedObstacles.clear();
 
     QFile data("data.txt");
 
-    if(data.open(QIODevice::ReadWrite)){
+    if(data.open(QIODevice::ReadOnly)){
             QString num = data.readLine();
             int numObjs = num.toInt();
-            health = QString(data.readLine()).toInt();
-            score = QString(data.readLine()).toInt();
+            gameModel->setHealth(QString(data.readLine()).toInt());
+            gameModel->setScore(QString(data.readLine()).toInt());
+            mb->scoreLabel->setText("Score: " + QString::number(gameModel->getScore()));
             Object* obj = new Object();
 
             for(int i=0; i < numObjs; i++){
-                obj->loadGame(data);
+                //obj->loadGame(data);
+                QString s = data.readLine();
+
+                QString str = data.readLine();
+                int x = str.toInt();
+                QString str2 = data.readLine();
+                int y = str2.toInt();
+
+                obj->setType(s.toStdString());
+                obj->setX(x);
+                obj->setY(y);
                 if(obj->getType() == "MadDog"){
-                    QLabel * madDogLabel = new QLabel(this);
-                    QMovie * dogMovie = new QMovie(":/dog.gif");
-                    madDogLabel->setMovie(dogMovie);
-                    madDogLabel->setGeometry(this->width(),200,50,50);
-                    madDogLabel->setScaledContents(true);
-                    dogMovie->start();
-                    madDogLabel->hide();
-                    //madDogLabel->show();
-                    o.obstacles.push_back(madDogLabel);
+
                 }else if(obj->getType() == "Lawnmower"){
-                    QLabel* lawnMowerLabel = new QLabel(this);
-                    QPixmap mower(":/lawnmower2.png");
-                    lawnMowerLabel->setPixmap(mower);
-                    lawnMowerLabel->setGeometry(this->width(), 201, 50,50);
-                    lawnMowerLabel->setScaledContents(true);
-                    lawnMowerLabel->hide();
-                    //lawnMowerLabel->show();
-                    o.obstacles.push_back(lawnMowerLabel);
+
                 }else if(obj->getType() == "Hole"){
-                    QLabel* holeLabel = new QLabel(this);
-                    QPixmap hole(":/hole.png");
-                    holeLabel->setPixmap(hole);
-                    holeLabel->setGeometry(this->width(),202,50,300);
-                    holeLabel->setScaledContents(true);
-                    holeLabel->hide();
-                    //holeLabel->show();
-                    o.obstacles.push_back(holeLabel);
-                    //std::random_shuffle(o.obstacles.begin(), o.obstacles.end());
-                }
+
                 }
             }
-
+            }
 
 }
 
@@ -312,6 +290,7 @@ void MainWindow::obstacleTimerHit()
         //std::cout << "CCAT HEALTH IS FIRST AT:   " << cCat->health << "\n";
         obst->move(obst->x() - 1, obst->y());
 //HERE IS COMMENTED OUT THE CODE FOR KILLING CAT AND STOPPING GAME
+        if(!cheating){
         for (unsigned int j = 0; j < cCat->catSensors.size(); j++)
         {
             QLabel * s = new QLabel(this);
@@ -325,6 +304,7 @@ void MainWindow::obstacleTimerHit()
                 std::cout << "WE HAVE IMPACT" << "\n";
                 std::cout << "CCAT HEALTH BEFORE HIP : " << cCat->health << "\n";
                 cCat->health -= hip;
+                mb->healthLabel->setText("Health: " + QString::number(cCat->health) +"%");
                 std::cout << "CCAT HEALTH IS AT :   " << cCat->health << "\n";
                 //hurtTimerHit();
                 //cCat->health = cCat->health - obj->getHealthImpact();
@@ -333,30 +313,28 @@ void MainWindow::obstacleTimerHit()
 
             if (cCat->health <= 0)
             {
-                std::cout << cCat->health << " IS CATS CURRENT HEALTH"<< "\n";
-                end = new QLabel(this);
-                end->setText("YOU LOSE");
-                end->showFullScreen();
-                end->setGeometry(cCat->cat->x(),cCat->cat->y() - 75, 100,100);
-                end->setScaledContents(true);
-                end->show();
+                std::cout << cCat->health << " IS CATS CURRENT HEALTH"<< "\n";                
+                mb->youLoseLbl->setGeometry(cCat->cat->x(),cCat->cat->y() - 75, 100,100);
+                mb->youLoseLbl->show();
                 backTimer->stop();
                 midTimer->stop();
                 frontTimer->stop();
                 obstacleTimer->stop();
                 spawningTimer->stop();
                 cCat->catMovie->stop();
-
              }
                 /*else if (cCat->health > 0)
                 {
                     hurtTimer->start();
                 }*/
 
-            }
+           }
         }
+       }
 
-
+        if(cCat->health <= 0){
+            mb->quitBtn->click();
+        }
 
 }
 
@@ -393,9 +371,9 @@ void MainWindow::spawningTimerHit()
     this->obstacleTimerHit();
 
     if (started){
-        score+=2;
+        gameModel->AddScore();
     }
-    mb->scoreLabel->setText("Score: "+ QString::number(score));
+    mb->scoreLabel->setText("Score: "+ QString::number(gameModel->getScore()));
 }
 
 void MainWindow::jumpTimerHit()
@@ -588,10 +566,12 @@ void MainWindow::furTimerHit()
 
 void MainWindow::on_quitBtn_clicked(){
     mb->resumeBtn->hide();
+    mb->pauseBtn->hide();
     mb->logoLabel->hide();;
     mb->healthLabel->hide();
     mb->scoreLabel->hide();
     mb->quitBtn->hide();
+    mb->youLoseLbl->hide();
     mb->endScreen->show();
     mb->gameOverLabel->show();
     mb->endScreen->setText("Top Scores: ------\n                ------\n                 ------\nYour Score:" + mb->scoreLabel->text());
@@ -605,22 +585,24 @@ void MainWindow::on_quitBtn_clicked(){
 }
 
 void MainWindow::on_playAgainBtn_clicked(){
-    health=100;
-    score=0;
+    gameModel->setHealth(100);
+    gameModel->setScore(0);
     mb->gameOverLabel->hide();
-    mb->logoLabel->show();
-    mb->endScreen->hide();
     mb->playAgainBtn->hide();
-    mb->scoreLabel->setText("Score: " + QString::number(score));
+    mb->endScreen->hide();
+    //mb->quitBtn->hide();
+    //mb->saveBtn->hide();
+    //mb->resumeBtn->hide();
+    mb->logoLabel->show();
+    mb->scoreLabel->setText("Score: " + QString::number(gameModel->getScore()));
     mb->scoreLabel->show();
     mb->healthLabel->show();
-    mb->quitBtn->hide();
-    mb->saveBtn->hide();
-    mb->resumeBtn->hide();
     cCat->cat->show();
     backTimer->start();
     midTimer->start();
     frontTimer->start();
+    cCat->catMovie->start();
+    mb->youLoseLbl->hide();
     mb->startBtn->clicked();
 }
 
@@ -642,12 +624,12 @@ void MainWindow::on_resumeBtn_clicked(){
 
 void MainWindow::on_saveBtn_clicked(){
         QFile data("data.txt");
-        if(data.open(QIODevice::ReadWrite)){
+        if(data.open(QIODevice::ReadWrite | QFile::Truncate)){
             QTextStream out(&data);
 
             out << Obstacle::instance().objects.size() << "\n";
-            out << health << "\n";
-            out << score << "\n";
+            out << gameModel->getHealth() << "\n";
+            out << gameModel->getScore() << "\n";
 
             for(Object *obj : Obstacle::instance().objects) {
                 obj->saveGame(out);
@@ -655,4 +637,11 @@ void MainWindow::on_saveBtn_clicked(){
         }
 
     mb->quitBtn->click();
+}
+void MainWindow::on_cheatBtn_clicked(){
+    if(cheating){
+        cheating = false;
+    } else {
+        cheating = true;
+    }
 }

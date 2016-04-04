@@ -8,6 +8,7 @@
 #include <QMediaPlaylist>
 #include "sound.h"
 #include "object.h"
+#include "gamemodel.h"
 
 class MovingBackground;
 
@@ -18,7 +19,8 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
+private:
+    GameModel* gameModel;
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -30,6 +32,7 @@ public:
     std::vector<QLabel*> furBalls;
     static int score, health ;
     bool started = false;
+    bool cheating = false;
 
     //background timers
     QTimer * backTimer;
@@ -45,6 +48,7 @@ public:
     QTimer * hurtTimer;
     int hurtCounter;
 
+<<<<<<< HEAD
     QLabel * end = nullptr;
     std::vector<QString> songs;
     QString song;
@@ -52,8 +56,11 @@ public:
     QMediaPlayer player;
     QMediaPlaylist  playList;
 
+=======
+>>>>>>> upstream/master
 public slots:
     void on_startBtn_clicked();
+    void on_cheatBtn_clicked();
     void on_pauseBtn_clicked();
     void on_quitBtn_clicked();    
     void on_resumeBtn_clicked();
