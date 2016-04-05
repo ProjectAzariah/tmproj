@@ -9,29 +9,25 @@
 
 using namespace std;
 
-class HighScore : public QObject {
+class HighScore {
 
 private:
-    int OBJscore, date; //time
+
     QString name;
 
-    vector<string> playerscores;
+    vector<string> playerNames;
+    vector<int> playerScore;
+
 public:
 
-
-
-    //Getters
-    int getScore() {return OBJscore;}
+    //getter
     QString getName() {return name;}
-    int getDate() {return date;}
-    //int getTime() {return time;}
 
+    //setter for <name>
 
-    void setScore (int newScore) { OBJscore = newScore;}
-    /*void setName(int newName) {name = newName;}
-    void setDate(int newDate) {date =  newDate;}
-    //void setTime(int newTime) { time = newTime;}*/
+    HighScore(){}
 
+    void saveCurrentScore(string name);
 
     //uses the <filename> with a certain name and saves the data to it
     void saveToFile();
@@ -39,11 +35,11 @@ public:
     //uses the <filename> to get the file reads from it and outputs the data in corect format
     void loadFromFile();
 
-    void add();
+    //void add();
 
     //BubbleSort(vector<string> &playerscore);
 
-    void clearscore();
+    //void clearscore();
 
     void Print();
 
