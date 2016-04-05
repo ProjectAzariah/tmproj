@@ -107,6 +107,21 @@ MovingBackground::MovingBackground(QWidget *parent)
     startBtn->setIconSize(start.rect().size());
     startBtn->show();
 
+    easyBtn = new QPushButton(parent);
+    easyBtn->setText("EASY");
+    easyBtn->setGeometry(150,300,120,50);
+    easyBtn->show();
+
+    mediumBtn = new QPushButton(parent);
+    mediumBtn->setText("MEDIUM");
+    mediumBtn->setGeometry(150,350,120,50);
+    mediumBtn->show();
+
+    hardBtn = new QPushButton(parent);
+    hardBtn->setText("HARD");
+    hardBtn->setGeometry(150,400,120,50);
+    hardBtn->show();
+
     //makes load button
     QPixmap load(":/load.png");
     loadBtn = new QPushButton(parent);

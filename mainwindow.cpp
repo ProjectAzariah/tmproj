@@ -25,6 +25,9 @@ MainWindow::MainWindow(QWidget *parent) :
     mb = new MovingBackground(this);
 
     connect(mb->startBtn, SIGNAL(clicked()), SLOT(on_startBtn_clicked()));
+    connect(mb->easyBtn, SIGNAL(clicked()), SLOT (on_easyBtn_clicked()));
+    connect(mb->mediumBtn, SIGNAL(clicked()), SLOT (on_mediumBtn_clicked()));
+    connect(mb->hardBtn, SIGNAL(clicked()), SLOT (on_hardBtn_clicked()));
     connect(mb->quitBtn, SIGNAL(clicked()), SLOT(on_quitBtn_clicked()));
     connect(mb->playAgainBtn, SIGNAL(clicked()), SLOT(on_playAgainBtn_clicked()));
     connect(mb->pauseBtn, SIGNAL(clicked()), SLOT(on_pauseBtn_clicked()));
@@ -644,4 +647,57 @@ void MainWindow::on_cheatBtn_clicked(){
     } else {
         cheating = true;
     }
+}
+
+void MainWindow::on_easyBtn_clicked()
+{
+    backTimer->stop();
+    midTimer->stop();
+    frontTimer->stop();
+    backTimer->setInterval(70);
+    midTimer->setInterval(40);
+    frontTimer->setInterval(10);
+    backTimer->start();
+    midTimer->start();
+    frontTimer->start();
+
+    obstacleTimer->setInterval(2);
+    spawningTimer->setInterval(4000);
+
+}
+
+void MainWindow::on_mediumBtn_clicked()
+{
+    backTimer->stop();
+    midTimer->stop();
+    frontTimer->stop();
+    backTimer->setInterval(50);
+    midTimer->setInterval(20);
+    frontTimer->setInterval(5);
+    backTimer->start();
+    midTimer->start();
+    frontTimer->start();
+
+    obstacleTimer->setInterval(1);
+    spawningTimer->setInterval(2000);
+
+
+}
+
+void MainWindow::on_hardBtn_clicked()
+{
+    backTimer->stop();
+    midTimer->stop();
+    frontTimer->stop();
+    backTimer->setInterval(30);
+    midTimer->setInterval(10);
+    frontTimer->setInterval(3);
+    backTimer->start();
+    midTimer->start();
+    frontTimer->start();
+
+    obstacleTimer->setInterval(.5);
+    spawningTimer->setInterval(1000);
+
+
 }

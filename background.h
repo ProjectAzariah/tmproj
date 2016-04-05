@@ -31,6 +31,9 @@ public:
     QPushButton* cheatBtn;
     QPushButton * startBtn;
     QPushButton * loadBtn;
+    QPushButton * easyBtn;
+    QPushButton * mediumBtn;
+    QPushButton * hardBtn;
     QLabel* scoreLabel;
     QLabel* healthLabel;
     QPushButton * saveBtn;

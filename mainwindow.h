@@ -48,7 +48,7 @@ public:
     QTimer * hurtTimer;
     int hurtCounter;
 
-<<<<<<< HEAD
+
     QLabel * end = nullptr;
     std::vector<QString> songs;
     QString song;
@@ -56,10 +56,12 @@ public:
     QMediaPlayer player;
     QMediaPlaylist  playList;
 
-=======
->>>>>>> upstream/master
+
 public slots:
     void on_startBtn_clicked();
+    void on_easyBtn_clicked();
+    void on_mediumBtn_clicked();
+    void on_hardBtn_clicked();
     void on_cheatBtn_clicked();
     void on_pauseBtn_clicked();
     void on_quitBtn_clicked();    
