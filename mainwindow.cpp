@@ -613,11 +613,11 @@ void MainWindow::on_quitBtn_clicked(){
     mb->endScreen->setText("Top Scores: ------\n                ------\n                 ------\nYour Score:" + mb->scoreLabel->text());
     mb->endScreen->setAlignment(Qt::AlignCenter);
     mb->playAgainBtn->show();
-    mb->easyBtn->setGeometry(330,150,90,50);
+    mb->easyBtn->setGeometry(340,200,90,50);
     mb->easyBtn->show();
-    mb->mediumBtn->setGeometry(430,150,125,50);
+    mb->mediumBtn->setGeometry(440,200,125,50);
     mb->mediumBtn->show();
-    mb->hardBtn->setGeometry(565,150,90,50);
+    mb->hardBtn->setGeometry(575,200,90,50);
     mb->hardBtn->show();
     mb->loadBtn->setGeometry(435,350,183, 80);
     mb->loadBtn->show();
@@ -640,6 +640,9 @@ void MainWindow::on_playAgainBtn_clicked(){
     mb->youLoseLbl->hide();
     mb->endScreen->hide();
     mb->saveBtn->hide();
+    mb->easyBtn->hide();
+    mb->mediumBtn->hide();
+    mb->hardBtn->hide();
 
     Obstacle& o = Obstacle::instance();
     for(unsigned int i = 0; i < o.spawnedObstacles.size(); i++){

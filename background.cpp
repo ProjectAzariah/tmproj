@@ -114,27 +114,6 @@ MovingBackground::MovingBackground(QWidget *parent)
     startBtn->setIconSize(start.rect().size());
     startBtn->show();
 
-    //Difficulty Toggles
-
-    easyBtn = new QRadioButton(parent);
-    easyBtn->setText("EASY");
-    easyBtn->setGeometry(330,210,90,50);
-    easyBtn->setFont(toggleFont);
-    easyBtn->toggle();
-    easyBtn->show();
-
-    mediumBtn = new QRadioButton(parent);
-    mediumBtn->setText("MEDIUM");
-    mediumBtn->setGeometry(430,210,125,50);
-    mediumBtn->setFont(toggleFont);
-    mediumBtn->show();
-
-    hardBtn = new QRadioButton(parent);
-    hardBtn->setText("HARD");
-    hardBtn->setGeometry(565,210,90,50);
-    hardBtn->setFont(toggleFont);
-    hardBtn->show();
-
     //makes pause button
     pauseBtn = new QPushButton(parent);
     pauseBtn->setText("&PAUSE");
@@ -209,4 +188,25 @@ MovingBackground::MovingBackground(QWidget *parent)
     youLoseLbl->showFullScreen();
     youLoseLbl->setScaledContents(true);
     youLoseLbl->hide();
+
+    //Difficulty Toggles
+
+    easyBtn = new QRadioButton(parent);
+    easyBtn->setText("EASY");
+    easyBtn->setGeometry(330,210,90,50);
+    easyBtn->setFont(toggleFont);
+    easyBtn->toggle();
+    easyBtn->show();
+
+    mediumBtn = new QRadioButton(parent);
+    mediumBtn->setText("MEDIUM");
+    mediumBtn->setGeometry(430,210,125,50);
+    mediumBtn->setFont(toggleFont);
+    mediumBtn->show();
+
+    hardBtn = new QRadioButton(parent);
+    hardBtn->setText("HARD");
+    hardBtn->setGeometry(565,210,90,50);
+    hardBtn->setFont(toggleFont);
+    hardBtn->show();
 }
