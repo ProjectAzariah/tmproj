@@ -179,18 +179,49 @@ void MainWindow::on_startBtn_clicked(){
     mb->scoreLabel->show();
     mb->startBtn->setDisabled(true);
     mb->startBtn->hide();
+    mb->easyBtn->hide();
+    mb->mediumBtn->hide();
+    mb->hardBtn->hide();
     mb->loadBtn->hide();
+    mb->loadBtn->setGeometry(510,270,120, 50);
     mb->introLabel->hide();
     mb->pauseBtn->show();
     mb->cheatBtn->show();
 
+    backTimer->stop();
+    midTimer->stop();
+    frontTimer->stop();
+
     obstacleTimer = new QTimer(this);
-    obstacleTimer->setInterval(1);
+    spawningTimer = new QTimer(this);
+
+    if(mb->easyBtn->isChecked()){
+        backTimer->setInterval(70);
+        midTimer->setInterval(40);
+        frontTimer->setInterval(10);
+        obstacleTimer->setInterval(2);
+        spawningTimer->setInterval(4000);
+    } else if(mb->mediumBtn->isChecked()){
+        backTimer->setInterval(50);
+        midTimer->setInterval(20);
+        frontTimer->setInterval(5);
+        obstacleTimer->setInterval(1);
+        spawningTimer->setInterval(2000);
+    } else if (mb->hardBtn->isChecked()){
+        backTimer->setInterval(30);
+        midTimer->setInterval(10);
+        frontTimer->setInterval(3);
+        obstacleTimer->setInterval(.5);
+        spawningTimer->setInterval(1000);
+    }
+
+    backTimer->start();
+    midTimer->start();
+    frontTimer->start();
+
     connect(obstacleTimer, SIGNAL(timeout()), this, SLOT(obstacleTimerHit()));
     obstacleTimer->start();
 
-    spawningTimer = new QTimer(this);
-    spawningTimer->setInterval(3000);
     connect(spawningTimer, SIGNAL(timeout()), this, SLOT(spawningTimerHit()));
     spawningTimer->start();
 
@@ -257,6 +288,7 @@ void MainWindow:: on_pauseBtn_clicked(){
     mb->quitBtn->show();
     mb->saveBtn->show();
     mb->pauseBtn->hide();
+    mb->cheatBtn->hide();
     mb->resumeBtn->show();
 
     obstacleTimer->stop();
@@ -574,11 +606,21 @@ void MainWindow::on_quitBtn_clicked(){
     mb->healthLabel->hide();
     mb->scoreLabel->hide();
     mb->quitBtn->hide();
+    mb->cheatBtn->hide();
     mb->youLoseLbl->hide();
     mb->endScreen->show();
     mb->gameOverLabel->show();
     mb->endScreen->setText("Top Scores: ------\n                ------\n                 ------\nYour Score:" + mb->scoreLabel->text());
+    mb->endScreen->setAlignment(Qt::AlignCenter);
     mb->playAgainBtn->show();
+    mb->easyBtn->setGeometry(330,150,90,50);
+    mb->easyBtn->show();
+    mb->mediumBtn->setGeometry(430,150,125,50);
+    mb->mediumBtn->show();
+    mb->hardBtn->setGeometry(565,150,90,50);
+    mb->hardBtn->show();
+    mb->loadBtn->setGeometry(435,350,183, 80);
+    mb->loadBtn->show();
 
     cCat->cat->hide();
     for(size_t i = 0; i < Obstacle::instance().obstacles.size(); i++){
@@ -592,21 +634,31 @@ void MainWindow::on_playAgainBtn_clicked(){
     gameModel->setScore(0);
     mb->gameOverLabel->hide();
     mb->playAgainBtn->hide();
-    mb->endScreen->hide();
-    //mb->quitBtn->hide();
-    //mb->saveBtn->hide();
-    //mb->resumeBtn->hide();
-    mb->logoLabel->show();
+    mb->loadBtn->hide();
+    mb->healthLabel->setText("Health: " + QString::number(cCat->health) +"%");
     mb->scoreLabel->setText("Score: " + QString::number(gameModel->getScore()));
+    mb->youLoseLbl->hide();
+    mb->endScreen->hide();
+    mb->saveBtn->hide();
+
+    Obstacle& o = Obstacle::instance();
+    for(unsigned int i = 0; i < o.spawnedObstacles.size(); i++){
+        delete o.spawnedObstacles[i];
+    }
+    o.spawnedObstacles.clear();
+
+    mb->logoLabel->show();
     mb->scoreLabel->show();
     mb->healthLabel->show();
+    mb->pauseBtn->show();
+    mb->cheatBtn->show();
     cCat->cat->show();
     backTimer->start();
     midTimer->start();
     frontTimer->start();
     cCat->catMovie->start();
-    mb->youLoseLbl->hide();
-    mb->startBtn->clicked();
+    spawningTimer->start();
+    mb->startBtn->click();
 }
 
 void MainWindow::on_resumeBtn_clicked(){
@@ -614,6 +666,7 @@ void MainWindow::on_resumeBtn_clicked(){
     mb->saveBtn->hide();
     mb->pauseBtn->show();
     mb->resumeBtn->hide();
+    mb->cheatBtn->show();
 
     obstacleTimer->start();
     spawningTimer->start();
@@ -649,7 +702,7 @@ void MainWindow::on_cheatBtn_clicked(){
     }
 }
 
-void MainWindow::on_easyBtn_clicked()
+/*void MainWindow::on_easyBtn_clicked()
 {
     backTimer->stop();
     midTimer->stop();
@@ -700,4 +753,4 @@ void MainWindow::on_hardBtn_clicked()
     spawningTimer->setInterval(1000);
 
 
-}
+}*/
