@@ -348,6 +348,7 @@ void MainWindow::obstacleTimerHit()
        }
 
         if(cCat->health <= 0){
+            gameModel->highscore.saveCurrentScore();
             mb->quitBtn->click();
         }
 
@@ -596,14 +597,14 @@ void MainWindow::on_quitBtn_clicked(){
     mb->youLoseLbl->hide();
     mb->endScreen->show();
     mb->gameOverLabel->show();
-    mb->endScreen->setText("Top Scores: ------\n                ------\n                 ------\nYour Score:" + mb->scoreLabel->text());
+    mb->endScreen->setText("Top Scores: \n" + gameModel->highscore.Print() + "Your " + mb->scoreLabel->text());
     mb->endScreen->setAlignment(Qt::AlignCenter);
     mb->playAgainBtn->show();
-    mb->easyBtn->setGeometry(340,200,90,50);
+    mb->easyBtn->setGeometry(340,210,90,50);
     mb->easyBtn->show();
-    mb->mediumBtn->setGeometry(440,200,125,50);
+    mb->mediumBtn->setGeometry(440,210,125,50);
     mb->mediumBtn->show();
-    mb->hardBtn->setGeometry(575,200,90,50);
+    mb->hardBtn->setGeometry(575,210,90,50);
     mb->hardBtn->show();
     mb->loadBtn->setGeometry(435,350,183, 80);
     mb->loadBtn->show();
@@ -674,6 +675,7 @@ void MainWindow::on_saveBtn_clicked(){
         out << gameModel->getHealth() << "\n";
         out << gameModel->getScore() << "\n";
     }
+    gameModel->highscore.saveCurrentScore();
 
 mb->quitBtn->click();
 }

@@ -6,15 +6,15 @@
 #include "background.h"
 #include "gamemodel.h"
 
+#include <vector>
+#include <algorithm>
+
 using namespace std;
 
-void HighScore::saveCurrentScore(string name){
-    for(size_t i = 0; i < playerScore.size(); i++){
-        playerNames.insert(playerNames.begin() +i, name);
-        playerScore.insert(playerScore.begin() + i, GameModel::instance()->getScore());
-    }
+void HighScore::saveCurrentScore(){
+    playerScore.push_back(GameModel::instance()->getScore());
 }
-
+/*
 void HighScore::loadFromFile()
 {
    ifstream infile("highscore.txt");
@@ -42,42 +42,41 @@ void HighScore::saveToFile(){
     scoreFile.open("highscores.txt");
     for(size_t i = 0; i < playerNames.size(); i++ ){
          scoreFile << playerNames.at(i);
-         scoreFile << playerScore.at(i);
+         scoreFile << playerScore[i];
     }
     scoreFile.close();
 }
-
-void HighScore::Print(){
-       QString text;
+*/
+QString HighScore::Print(){
+        QString text;
         QString num;
-        QString from;
 
-        for(size_t i = 0; i < playerNames.size(); i++) {
-            num = "";
+        sort(playerScore.begin(), playerScore.end());
+        if (playerScore.size()>=3){
+        for(size_t i = 0; i < 3; i++) {
+            num ="";
             text += num.number((i + 1), 10);
             text += ": ";
-            from = "";
-            text += from.fromStdString(playerNames.at(i));
-            text += " - ";
-            num = "";
             text += num.number(playerScore.at(i), 10);
             text += "\n";
-
-
         }
-
-
-}
-
-/*void HighScore::BubbleSort(vector<string> &playerscore){
-
-}*/
-
-void HighScore::testCases(){
-    //don't work any more
-    /*HighScore points("Bob", 40,  3);
-
-    assert(points.getScore() == 40);
-    assert(points.getName() == "Bob");
-    assert(points.getDate() == 3);*/
+        }else{
+            int size = playerScore.size();
+            int blanks = 3-size;
+            size_t i =0;
+            for(i; i < size; i++){
+                num="";
+                text += num.number((i + 1), 10);
+                text += ": ";
+                text += num.number(playerScore.at(i), 10);
+                text += "\n";
+            }
+            for(size_t i2=0; i2 < blanks; i2++){
+                text += num.number((i+1), 10);
+                text += ": ---";
+                text += "\n";
+                i++;
+            }
+        }
+        return text;
 }
