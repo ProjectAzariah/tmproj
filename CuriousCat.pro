@@ -38,5 +38,5 @@ FORMS    += mainwindow.ui
 RESOURCES += \
     Images/resources.qrc \
     Images/resources.qrc
-QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_CXXFLAGS += -std=c++11
 

@@ -29,7 +29,7 @@ QLabel* Obstacle::spawnObstacles(QWidget *parent)
 
     QLabel * madDogLabel = new QLabel(parent);
     QMovie * dogMovie = new QMovie(":/dog.gif");
-    Object * dog = new MadDog();
+    //Object * dog = new MadDog();
     madDogLabel->setMovie(dogMovie);
     madDogLabel->setGeometry(parent->width(),460,128,192);
     madDogLabel->setScaledContents(true);
@@ -55,9 +55,14 @@ QLabel* Obstacle::spawnObstacles(QWidget *parent)
     holeLabel->hide();
     //holeLabel->show();
     o.obstacles.push_back(holeLabel);
-    std::random_shuffle(o.obstacles.begin(), o.obstacles.end());
+    //REMOVE FROM HERE UP AND PUT IN DIFFERENT PLACE
 
     QLabel * ob = new QLabel(parent);
+    if (o.obstacles.size() > 4)
+    {
+        o.obstacles.erase(obstacles.begin(),obstacles.begin() + 3);
+    }
+    std::random_shuffle(o.obstacles.begin(), o.obstacles.end());
 
     ob = o.obstacles[0];
     if (ob->y() == 460)
@@ -65,18 +70,21 @@ QLabel* Obstacle::spawnObstacles(QWidget *parent)
         Object * obj = new MadDog();
         obj->setHealthImpact(50);
         objects.push_back(obj);
+        //objects.erase(objects.begin());
     }
     else if (ob->y() == 514)
     {
         Object * obj = new LawnMower();
         obj->setHealthImpact(25);
         objects.push_back(obj);
+        //objects.erase(objects.begin());
     }
     else if (ob->y() == 615)
     {
         Object * obj = new Hole();
         obj->setHealthImpact(100);
         objects.push_back(obj);
+        //objects.erase(objects.begin());
     }
 
     ob->show();

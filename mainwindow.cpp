@@ -8,7 +8,6 @@
 #include <QDebug>
 #include <QDir>
 #include <iostream>
-
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "background.h"
@@ -22,7 +21,9 @@ MainWindow::MainWindow(QWidget *parent) :
     gameModel = GameModel::instance();
 
     ui->setupUi(this);
+
     mb = new MovingBackground(this);
+
 
     connect(mb->startBtn, SIGNAL(clicked()), SLOT(on_startBtn_clicked()));
     connect(mb->easyBtn, SIGNAL(clicked()), SLOT (on_easyBtn_clicked()));
@@ -38,13 +39,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //background timers
     backTimer = new QTimer(parent);
-    backTimer->setInterval(70);
+    backTimer->setInterval(50);
     connect(backTimer, SIGNAL(timeout()), this, SLOT(backTimerHit()));
     backTimer->start();
     //bool active = mb->backTimer->isActive();
     //this->backTimerHit();
     midTimer = new QTimer(parent);
-    midTimer->setInterval(40);
+    midTimer->setInterval(20);
     connect(midTimer, SIGNAL(timeout()), this, SLOT(midTimerHit()));
     midTimer->start();
     //this->midTimerHit();
@@ -69,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //jumpTimer
     jumpTimer = new QTimer(this);
-    jumpTimer->setInterval(1);
+    jumpTimer->setInterval(0);
     connect(jumpTimer, SIGNAL(timeout()), this, SLOT(jumpTimerHit()));
 
     didCollide = false;
@@ -77,7 +78,7 @@ MainWindow::MainWindow(QWidget *parent) :
     sounds = new sound();
 
 
-    songs = {"play_the_game.mp3","Pixel adventures.mp3","random_silly_chip_song.mp3"};
+    songs = {"play_the_game.mp3","Pixel adventures.mp3","random_silly_chip_song.mp3", "Flights of Fancy.mp3"};
     std::random_shuffle(songs.begin(),songs.end());
     song = songs[0];
 
@@ -193,6 +194,7 @@ void MainWindow::on_startBtn_clicked(){
     frontTimer->stop();
 
     obstacleTimer = new QTimer(this);
+
     spawningTimer = new QTimer(this);
 
     if(mb->easyBtn->isChecked()){
@@ -222,17 +224,17 @@ void MainWindow::on_startBtn_clicked(){
     connect(obstacleTimer, SIGNAL(timeout()), this, SLOT(obstacleTimerHit()));
     obstacleTimer->start();
 
+
     connect(spawningTimer, SIGNAL(timeout()), this, SLOT(spawningTimerHit()));
     spawningTimer->start();
 
-    Obstacle& o = Obstacle::instance();
+    //Obstacle& o = Obstacle::instance();
 
-    MadDog();
-    LawnMower();
-    Hole();
-    o.spawnObstacles(this);
+    //MadDog();
+    //LawnMower();
+    //Hole();
+    //o.spawnObstacles(this);
 }
-//ATTENTION: THIS IS WHERE I PUT THE CODE FOR THE GAME TO STOP WHEN THE CAT RUNS INTO
 
 void MainWindow:: on_loadBtn_clicked(){
     Obstacle& o = Obstacle::instance();
@@ -298,7 +300,7 @@ void MainWindow::obstacleTimerHit()
         int hip = obj->getHealthImpact();
         //std::cout << hip <<  "\n";
         //std::cout << "CCAT HEALTH IS FIRST AT:   " << cCat->health << "\n";
-        obst->move(obst->x() - 1, obst->y());
+        obst->move(obst->x() - 3, obst->y());
 //HERE IS COMMENTED OUT THE CODE FOR KILLING CAT AND STOPPING GAME
         if(!cheating){
         for (unsigned int j = 0; j < cCat->catSensors.size(); j++)
@@ -307,11 +309,16 @@ void MainWindow::obstacleTimerHit()
             s = cCat->catSensors.at(j);
             if (obst->geometry().intersects(s->geometry()) && !obj->isCollided)
             {
+               // s->deleteLater();
+
+                //s->deleteLater();
                 hurtTimer->start();
 
                 //didCollide = true;
                 obj->isCollided = true;
-                std::cout << "WE HAVE IMPACT" << "\n";
+                std::cout << "WE HAVE IMPACT WITH " << obj->getType() << "\n";
+                //obj = o.objects[i + 1];
+                //obj->isCollided = false;
                 std::cout << "CCAT HEALTH BEFORE HIP : " << cCat->health << "\n";
                 cCat->health -= hip;
                 mb->healthLabel->setText("Health: " + QString::number(cCat->health) +"%");
@@ -319,6 +326,8 @@ void MainWindow::obstacleTimerHit()
                 //hurtTimerHit();
                 //cCat->health = cCat->health - obj->getHealthImpact();
                 //break;
+                //obst->deleteLater();
+                //obj->deleteLater();
             }
 
             if (cCat->health <= 0)
@@ -333,12 +342,8 @@ void MainWindow::obstacleTimerHit()
                 spawningTimer->stop();
                 cCat->catMovie->stop();
              }
-                /*else if (cCat->health > 0)
-                {
-                    hurtTimer->start();
-                }*/
-
            }
+
         }
        }
 
@@ -391,56 +396,62 @@ void MainWindow::jumpTimerHit()
     cCat->counter++;
     if (cCat->height < 200 && cCat->isClimbing)
     {
-        cCat->speed--;
-        cCat->height++;
-        if (cCat->counter % 20 == 0)
+        cCat->speed-=2;
+        cCat->height+=2;
+        if (cCat->counter % 10 == 0)
         {
             jumpTimer->setInterval(jumpTimer->interval() + 1);
             qDebug() << jumpTimer->interval() << endl;
 
         }
 
-        cCat->cat->move(cCat->cat->x(), cCat->cat->y() - 1);
+        cCat->cat->move(cCat->cat->x(), cCat->cat->y() - 2);
         for (unsigned int i = 0; i < cCat->catSensors.size(); i++)
         {
             QLabel * s = new QLabel(this);
             s = cCat->catSensors.at(i);
-            s->move(s->x(), s->y() - 1);
+            s->move(s->x(), s->y() - 2);
         }
     }
     else if (cCat->height == 200)
     {
         cCat->isClimbing = false;
         cCat->isFalling = true;
-        cCat->speed++;
-        cCat->height--;
+        cCat->speed+=2;
+        cCat->height-=2;
 
-        cCat->cat->move(cCat->cat->x(), cCat->cat->y() + 1);
+        cCat->cat->move(cCat->cat->x(), cCat->cat->y() + 2);
+        for (unsigned int i = 0; i < cCat->catSensors.size(); i++)
+        {
+            QLabel * s = new QLabel(this);
+            s = cCat->catSensors.at(i);
+            s->move(s->x(), s->y() + 2);
+        }
     }
     else if (cCat->height == 0)
     {
         cCat->isLanded = true;
         cCat->isFalling = false;
-        //jumpTimer->setInterval(1);
+        jumpTimer->setInterval(0);
         jumpTimer->stop();
     }
     else if (cCat->height < 200 && cCat->isFalling && !cCat->isLanded)
     {
-        cCat->speed++;
-        cCat->height--;
-        if (cCat->counter % 20 == 0)
+        cCat->speed+=2;
+        cCat->height-=2;
+        if (cCat->counter % 10 == 0)
         {
             jumpTimer->setInterval(jumpTimer->interval() - 1);
             qDebug() << jumpTimer->interval() << endl;
         }
 
 
-        cCat->cat->move(cCat->cat->x(), cCat->cat->y() + 1);
+        cCat->cat->move(cCat->cat->x(), cCat->cat->y() + 2);
         for (unsigned int i = 0; i < cCat->catSensors.size(); i++)
         {
             QLabel * s = new QLabel(this);
             s = cCat->catSensors.at(i);
-            s->move(s->x(), s->y() + 1);
+            s->move(s->x(), s->y() + 2);
         }
 
     }

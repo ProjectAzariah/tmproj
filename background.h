@@ -3,7 +3,6 @@
 
 #include <QLabel>
 #include <QTimer>
-#include <QMovie>
 #include <QFile>
 #include <QTextStream>
 #include <QTextEdit>
