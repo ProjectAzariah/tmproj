@@ -42,10 +42,6 @@ public:
     void setType(std::string newType) {type = newType;}
     void setHealthImpact(int h){healthimpact = h;}
     int getHealthImpact(){return healthimpact;}
-
-    virtual void saveGame(QTextStream &out) { }
-    void loadGame(QFile &file);
-
 };
 
 class CuriousCat : public Object
@@ -75,7 +71,8 @@ public:
     const int tailY = 537;
     explicit CuriousCat(QWidget * parent);
 
-    void saveGame(QTextStream &out);
+
+    int health = 100;
 
 };
 
@@ -85,8 +82,7 @@ class MadDog :public Object
 
 public:
     explicit MadDog();
-
-    void saveGame(QTextStream &out);
+    //QTimer * dogTimer;
 
 
 };
@@ -94,22 +90,62 @@ public:
 class LawnMower : public Object
 {
     Q_OBJECT
-
+private:
+    //QLabel * mower;
 public:
     explicit LawnMower();
-
-    void saveGame(QTextStream &out);
 
 };
 
 class Hole : public Object
 {
     Q_OBJECT
-
+private:
+    //QLabel * hole;
 public:
     explicit Hole();
 
-    void saveGame(QTextStream &out);
+/*=======
+
+private:
+    int x;
+    int y;
+    int h;
+    int w;
+    std::string type;
+    bool isActive();
+
+    //QLabel * label;
+
+public:
+    int getX()
+    {return x;}
+    void setX(int newX) {x = newX;}
+    int getY()
+    {return y;}
+    void setY(int newY) {y = newY;}
+    int getW()
+    {return w;}
+    void setW(int newW) {w = newW;}
+    int getH()
+    {return h;}
+    void setH(int newH) {h = newH;}
+    std::string getType()
+    {return type;}
+    void setType(std::string newType) {type = newType;}
+    //static QLabel *objectSpawner(QWidget * parent);
+    //static std::vector<QLabel*> objects;
+    //static std::vector<Object> spawnedObjects;
+
+};
+
+class CuriousCat : public Object
+{
+public:
+    QLabel * cat;
+    QMovie * catMovie;
+    explicit CuriousCat(QWidget * parent);
+  */
 };
 
 #endif // OBJECT_H
