@@ -235,52 +235,27 @@ void MainWindow::on_startBtn_clicked(){
 //ATTENTION: THIS IS WHERE I PUT THE CODE FOR THE GAME TO STOP WHEN THE CAT RUNS INTO
 
 void MainWindow:: on_loadBtn_clicked(){
-    started=true;
-    mb->healthLabel->show();
-    mb->scoreLabel->show();
-    mb->startBtn->setDisabled(true);
-    mb->startBtn->hide();
-    mb->loadBtn->hide();
-    mb->introLabel->hide();
-    mb->pauseBtn->show();
-
     Obstacle& o = Obstacle::instance();
 
     o.obstacles.clear();
     o.objects.clear();
     o.spawnedObstacles.clear();
 
+    mb->endScreen->hide();
+    mb->playAgainBtn->hide();
+    mb->saveBtn->hide();
+
+    MainWindow::on_startBtn_clicked();
+    obstacleTimer->setInterval(10);
+
     QFile data("data.txt");
 
     if(data.open(QIODevice::ReadOnly)){
-            QString num = data.readLine();
-            int numObjs = num.toInt();
             gameModel->setHealth(QString(data.readLine()).toInt());
             gameModel->setScore(QString(data.readLine()).toInt());
             mb->scoreLabel->setText("Score: " + QString::number(gameModel->getScore()));
-            Object* obj = new Object();
-
-            for(int i=0; i < numObjs; i++){
-                //obj->loadGame(data);
-                QString s = data.readLine();
-
-                QString str = data.readLine();
-                int x = str.toInt();
-                QString str2 = data.readLine();
-                int y = str2.toInt();
-
-                obj->setType(s.toStdString());
-                obj->setX(x);
-                obj->setY(y);
-                if(obj->getType() == "MadDog"){
-
-                }else if(obj->getType() == "Lawnmower"){
-
-                }else if(obj->getType() == "Hole"){
-
-                }
-            }
-            }
+            mb->healthLabel->setText("Health: " + QString::number(cCat->health) +"%");
+  }
 
 }
 
@@ -682,20 +657,14 @@ void MainWindow::on_resumeBtn_clicked(){
 }
 
 void MainWindow::on_saveBtn_clicked(){
-        QFile data("data.txt");
-        if(data.open(QIODevice::ReadWrite | QFile::Truncate)){
-            QTextStream out(&data);
+    QFile data("data.txt");
+    if(data.open(QIODevice::ReadWrite | QFile::Truncate)){
+        QTextStream out(&data);
+        out << gameModel->getHealth() << "\n";
+        out << gameModel->getScore() << "\n";
+    }
 
-            out << Obstacle::instance().objects.size() << "\n";
-            out << gameModel->getHealth() << "\n";
-            out << gameModel->getScore() << "\n";
-
-            for(Object *obj : Obstacle::instance().objects) {
-                obj->saveGame(out);
-            }
-        }
-
-    mb->quitBtn->click();
+mb->quitBtn->click();
 }
 void MainWindow::on_cheatBtn_clicked(){
     if(cheating){
