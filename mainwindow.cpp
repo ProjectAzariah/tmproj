@@ -619,6 +619,11 @@ void MainWindow::on_playAgainBtn_clicked(){
     }
     o.spawnedObstacles.clear();
 
+    for(unsigned int i = 0; i < o.objects.size(); i++){
+        delete o.objects[i];
+    }
+    o.objects.clear();
+
     mb->logoLabel->show();
     mb->scoreLabel->show();
     mb->healthLabel->show();
@@ -629,6 +634,7 @@ void MainWindow::on_playAgainBtn_clicked(){
     midTimer->start();
     frontTimer->start();
     cCat->catMovie->start();
+    obstacleTimer->start();
     spawningTimer->start();
     mb->startBtn->click();
 }

@@ -35,7 +35,7 @@ QLabel* Obstacle::spawnObstacles(QWidget *parent)
         enemyLabel->setMovie(dogMovie);
         enemyLabel->setGeometry(parent->width(),460,128,192);
         dogMovie->start();
-    }else if(enemySelect = 1){
+    }else if(enemySelect == 1){
         enemyObject = new LawnMower;
         QPixmap mower(":/lawnmower2.png");
         enemyLabel->setPixmap(mower);
