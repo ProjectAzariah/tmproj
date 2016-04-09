@@ -239,7 +239,6 @@ void MainWindow::on_startBtn_clicked(){
 void MainWindow:: on_loadBtn_clicked(){
     Obstacle& o = Obstacle::instance();
 
-    o.obstacles.clear();
     o.objects.clear();
     o.spawnedObstacles.clear();
 
@@ -256,7 +255,7 @@ void MainWindow:: on_loadBtn_clicked(){
             gameModel->setHealth(QString(data.readLine()).toInt());
             gameModel->setScore(QString(data.readLine()).toInt());
             mb->scoreLabel->setText("Score: " + QString::number(gameModel->getScore()));
-            mb->healthLabel->setText("Health: " + QString::number(cCat->health) +"%");
+            mb->healthLabel->setText("Health: " + QString::number(gameModel->getHealth()) +"%");
   }
 
 }
@@ -291,66 +290,49 @@ void MainWindow::obstacleTimerHit()
 
     for (unsigned int i = 0; i < o.spawnedObstacles.size(); i++)
     {
-        QLabel * obst = new QLabel;
-        Object * obj = new Object;
-        obst = o.spawnedObstacles[i];
-        obj = o.objects[i];
-        //std::string str = obj->getType();
-        //std::cout << str << "\n";
+        QLabel * obst = o.spawnedObstacles[i];
+        Object * obj = o.objects[i];
+
         int hip = obj->getHealthImpact();
-        //std::cout << hip <<  "\n";
-        //std::cout << "CCAT HEALTH IS FIRST AT:   " << cCat->health << "\n";
+
         obst->move(obst->x() - 3, obst->y());
-//HERE IS COMMENTED OUT THE CODE FOR KILLING CAT AND STOPPING GAME
+
         if(!cheating){
-        for (unsigned int j = 0; j < cCat->catSensors.size(); j++)
-        {
-            QLabel * s = new QLabel(this);
-            s = cCat->catSensors.at(j);
-            if (obst->geometry().intersects(s->geometry()) && !obj->isCollided)
+            for (unsigned int j = 0; j < cCat->catSensors.size(); j++)
             {
-               // s->deleteLater();
+                QLabel * s = cCat->catSensors.at(j);
+                if (obst->geometry().intersects(s->geometry()) && !obj->isCollided)
+                {
+                    hurtTimer->start();
 
-                //s->deleteLater();
-                hurtTimer->start();
+                    std::cout << "CCAT HEALTH BEFORE HIP : " << gameModel->getHealth() << "\n";
+                    gameModel->Hurt(hip);
+                    mb->healthLabel->setText("Health: " + QString::number(gameModel->getHealth()) +"%");
+                    std::cout << "CCAT HEALTH IS AT :   " << gameModel->getHealth() << "\n";
+                    obj->isCollided=true;
 
-                //didCollide = true;
-                obj->isCollided = true;
-                std::cout << "WE HAVE IMPACT WITH " << obj->getType() << "\n";
-                //obj = o.objects[i + 1];
-                //obj->isCollided = false;
-                std::cout << "CCAT HEALTH BEFORE HIP : " << cCat->health << "\n";
-                cCat->health -= hip;
-                mb->healthLabel->setText("Health: " + QString::number(cCat->health) +"%");
-                std::cout << "CCAT HEALTH IS AT :   " << cCat->health << "\n";
-                //hurtTimerHit();
-                //cCat->health = cCat->health - obj->getHealthImpact();
-                //break;
-                //obst->deleteLater();
-                //obj->deleteLater();
+                }
+
+                if (gameModel->getHealth() <= 0)
+                {
+                    std::cout << gameModel->getHealth() << " IS CATS CURRENT HEALTH"<< "\n";
+                    mb->youLoseLbl->setGeometry(cCat->cat->x(),cCat->cat->y() - 75, 100,100);
+                    mb->youLoseLbl->show();
+                    backTimer->stop();
+                    midTimer->stop();
+                    frontTimer->stop();
+                    obstacleTimer->stop();
+                    spawningTimer->stop();
+                    cCat->catMovie->stop();
+                 }
             }
-
-            if (cCat->health <= 0)
-            {
-                std::cout << cCat->health << " IS CATS CURRENT HEALTH"<< "\n";                
-                mb->youLoseLbl->setGeometry(cCat->cat->x(),cCat->cat->y() - 75, 100,100);
-                mb->youLoseLbl->show();
-                backTimer->stop();
-                midTimer->stop();
-                frontTimer->stop();
-                obstacleTimer->stop();
-                spawningTimer->stop();
-                cCat->catMovie->stop();
-             }
-           }
-
         }
-       }
+     }
 
-        if(cCat->health <= 0){
-            gameModel->highscore.saveCurrentScore();
-            mb->quitBtn->click();
-        }
+     if(gameModel->getHealth() <= 0){
+         gameModel->highscore.saveCurrentScore();
+         mb->quitBtn->click();
+     }
 
 }
 
@@ -610,8 +592,8 @@ void MainWindow::on_quitBtn_clicked(){
     mb->loadBtn->show();
 
     cCat->cat->hide();
-    for(size_t i = 0; i < Obstacle::instance().obstacles.size(); i++){
-        Obstacle::instance().obstacles[i]->hide();
+    for(size_t i = 0; i < Obstacle::instance().spawnedObstacles.size(); i++){
+        Obstacle::instance().spawnedObstacles[i]->hide();
     }
 
 }
@@ -622,7 +604,7 @@ void MainWindow::on_playAgainBtn_clicked(){
     mb->gameOverLabel->hide();
     mb->playAgainBtn->hide();
     mb->loadBtn->hide();
-    mb->healthLabel->setText("Health: " + QString::number(cCat->health) +"%");
+    mb->healthLabel->setText("Health: " + QString::number(gameModel->getHealth()) +"%");
     mb->scoreLabel->setText("Score: " + QString::number(gameModel->getScore()));
     mb->youLoseLbl->hide();
     mb->endScreen->hide();

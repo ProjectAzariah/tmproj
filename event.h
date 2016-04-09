@@ -9,7 +9,6 @@ class Obstacle : QObject
 {
     Q_OBJECT
 public:
-    std::vector<QLabel*> obstacles;
     std::vector<QLabel*> spawnedObstacles;
     std::vector<Object*> objects;
 

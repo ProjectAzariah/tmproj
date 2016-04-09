@@ -12,7 +12,6 @@ Obstacle& Obstacle::instance()
   {
     instance_ = new Obstacle();
   }
-  //instance_->catX =
   return *instance_;
 }
 
@@ -23,72 +22,39 @@ Obstacle& Obstacle::instance()
 
 QLabel* Obstacle::spawnObstacles(QWidget *parent)
 {
-
     Obstacle& o = Obstacle::instance();
 
+    QLabel * enemyLabel = new QLabel(parent);
+    Object * enemyObject;
 
-    QLabel * madDogLabel = new QLabel(parent);
-    QMovie * dogMovie = new QMovie(":/dog.gif");
-    //Object * dog = new MadDog();
-    madDogLabel->setMovie(dogMovie);
-    madDogLabel->setGeometry(parent->width(),460,128,192);
-    madDogLabel->setScaledContents(true);
-    dogMovie->start();
-    madDogLabel->hide();
-    //madDogLabel->show();
-    o.obstacles.push_back(madDogLabel);
+    int enemySelect = rand() % 3;
 
-    QLabel* lawnMowerLabel = new QLabel(parent);
-    QPixmap mower(":/lawnmower2.png");
-    lawnMowerLabel->setPixmap(mower);
-    lawnMowerLabel->setGeometry(parent->width(), 514, 128,128);
-    lawnMowerLabel->setScaledContents(true);
-    lawnMowerLabel->hide();
-    //lawnMowerLabel->show();
-    o.obstacles.push_back(lawnMowerLabel);
-
-    QLabel* holeLabel = new QLabel(parent);
-    QPixmap hole(":/hole.png");
-    holeLabel->setPixmap(hole);
-    holeLabel->setGeometry(parent->width(),615,128,768);
-    holeLabel->setScaledContents(true);
-    holeLabel->hide();
-    //holeLabel->show();
-    o.obstacles.push_back(holeLabel);
-    //REMOVE FROM HERE UP AND PUT IN DIFFERENT PLACE
-
-    QLabel * ob = new QLabel(parent);
-    if (o.obstacles.size() > 4)
-    {
-        o.obstacles.erase(obstacles.begin(),obstacles.begin() + 3);
-    }
-    std::random_shuffle(o.obstacles.begin(), o.obstacles.end());
-
-    ob = o.obstacles[0];
-    if (ob->y() == 460)
-    {
-        Object * obj = new MadDog();
-        obj->setHealthImpact(50);
-        objects.push_back(obj);
-        //objects.erase(objects.begin());
-    }
-    else if (ob->y() == 514)
-    {
-        Object * obj = new LawnMower();
-        obj->setHealthImpact(25);
-        objects.push_back(obj);
-        //objects.erase(objects.begin());
-    }
-    else if (ob->y() == 615)
-    {
-        Object * obj = new Hole();
-        obj->setHealthImpact(100);
-        objects.push_back(obj);
-        //objects.erase(objects.begin());
+    if(enemySelect==0){
+        QMovie * dogMovie = new QMovie(":/dog.gif");
+        enemyObject = new MadDog();
+        enemyLabel->setMovie(dogMovie);
+        enemyLabel->setGeometry(parent->width(),460,128,192);
+        dogMovie->start();
+    }else if(enemySelect = 1){
+        enemyObject = new LawnMower;
+        QPixmap mower(":/lawnmower2.png");
+        enemyLabel->setPixmap(mower);
+        enemyLabel->setGeometry(parent->width(), 514, 128,128);
+    }else if(enemySelect==2){
+        enemyObject =new Hole;
+        QPixmap hole(":/hole.png");
+        enemyLabel->setPixmap(hole);
+        enemyLabel->setGeometry(parent->width(),615,128,768);
     }
 
-    ob->show();
-    spawnedObstacles.push_back(ob);
+    enemyLabel->setScaledContents(true);
+    enemyLabel->show();
 
-    return ob;
+    objects.push_back(enemyObject);
+    spawnedObstacles.push_back(enemyLabel);
+
+    return enemyLabel;
+
+
 }
+
