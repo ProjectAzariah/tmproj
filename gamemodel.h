@@ -3,15 +3,22 @@
 
 #include "highscore.h"
 
+#include <QString>
+#include <QFile>
+
+
 class GameModel
 {
 private:
     int health, score;
     static GameModel* gameModel;
+    vector<int> playerScore;
+
 
     GameModel():health(100), score(0) {}
 
 public:
+
     HighScore highscore;
     static GameModel* instance();
 
@@ -22,7 +29,11 @@ public:
     void setScore (int s){score = s;}
 
     int getHealth() {return health;}
-    int getScore() {return score;}     
+    int getScore() {return score;}
+
+    QString Print();
+    void saveCurrentScore();
+    void doScores();
 };
 
 
