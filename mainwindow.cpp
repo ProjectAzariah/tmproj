@@ -180,18 +180,51 @@ void MainWindow::on_startBtn_clicked(){
     mb->scoreLabel->show();
     mb->startBtn->setDisabled(true);
     mb->startBtn->hide();
+    mb->easyBtn->hide();
+    mb->mediumBtn->hide();
+    mb->hardBtn->hide();
     mb->loadBtn->hide();
+    mb->loadBtn->setGeometry(510,270,120, 50);
     mb->introLabel->hide();
     mb->pauseBtn->show();
     mb->cheatBtn->show();
 
+    backTimer->stop();
+    midTimer->stop();
+    frontTimer->stop();
+
     obstacleTimer = new QTimer(this);
-    obstacleTimer->setInterval(2);
+
+    spawningTimer = new QTimer(this);
+
+    if(mb->easyBtn->isChecked()){
+        backTimer->setInterval(70);
+        midTimer->setInterval(40);
+        frontTimer->setInterval(10);
+        obstacleTimer->setInterval(2);
+        spawningTimer->setInterval(4000);
+    } else if(mb->mediumBtn->isChecked()){
+        backTimer->setInterval(50);
+        midTimer->setInterval(20);
+        frontTimer->setInterval(5);
+        obstacleTimer->setInterval(1);
+        spawningTimer->setInterval(2000);
+    } else if (mb->hardBtn->isChecked()){
+        backTimer->setInterval(30);
+        midTimer->setInterval(10);
+        frontTimer->setInterval(3);
+        obstacleTimer->setInterval(.5);
+        spawningTimer->setInterval(1000);
+    }
+
+    backTimer->start();
+    midTimer->start();
+    frontTimer->start();
+
     connect(obstacleTimer, SIGNAL(timeout()), this, SLOT(obstacleTimerHit()));
     obstacleTimer->start();
 
-    spawningTimer = new QTimer(this);
-    spawningTimer->setInterval(1500);
+
     connect(spawningTimer, SIGNAL(timeout()), this, SLOT(spawningTimerHit()));
     spawningTimer->start();
 
@@ -204,52 +237,27 @@ void MainWindow::on_startBtn_clicked(){
 }
 
 void MainWindow:: on_loadBtn_clicked(){
-    started=true;
-    mb->healthLabel->show();
-    mb->scoreLabel->show();
-    mb->startBtn->setDisabled(true);
-    mb->startBtn->hide();
-    mb->loadBtn->hide();
-    mb->introLabel->hide();
-    mb->pauseBtn->show();
-
     Obstacle& o = Obstacle::instance();
 
     o.obstacles.clear();
     o.objects.clear();
     o.spawnedObstacles.clear();
 
+    mb->endScreen->hide();
+    mb->playAgainBtn->hide();
+    mb->saveBtn->hide();
+
+    MainWindow::on_startBtn_clicked();
+    obstacleTimer->setInterval(10);
+
     QFile data("data.txt");
 
     if(data.open(QIODevice::ReadOnly)){
-            QString num = data.readLine();
-            int numObjs = num.toInt();
             gameModel->setHealth(QString(data.readLine()).toInt());
             gameModel->setScore(QString(data.readLine()).toInt());
             mb->scoreLabel->setText("Score: " + QString::number(gameModel->getScore()));
-            Object* obj = new Object();
-
-            for(int i=0; i < numObjs; i++){
-                //obj->loadGame(data);
-                QString s = data.readLine();
-
-                QString str = data.readLine();
-                int x = str.toInt();
-                QString str2 = data.readLine();
-                int y = str2.toInt();
-
-                obj->setType(s.toStdString());
-                obj->setX(x);
-                obj->setY(y);
-                if(obj->getType() == "MadDog"){
-
-                }else if(obj->getType() == "Lawnmower"){
-
-                }else if(obj->getType() == "Hole"){
-
-                }
-            }
-            }
+            mb->healthLabel->setText("Health: " + QString::number(cCat->health) +"%");
+  }
 
 }
 
@@ -257,6 +265,7 @@ void MainWindow:: on_pauseBtn_clicked(){
     mb->quitBtn->show();
     mb->saveBtn->show();
     mb->pauseBtn->hide();
+    mb->cheatBtn->hide();
     mb->resumeBtn->show();
 
     obstacleTimer->stop();
@@ -583,11 +592,21 @@ void MainWindow::on_quitBtn_clicked(){
     mb->healthLabel->hide();
     mb->scoreLabel->hide();
     mb->quitBtn->hide();
+    mb->cheatBtn->hide();
     mb->youLoseLbl->hide();
     mb->endScreen->show();
     mb->gameOverLabel->show();
     mb->endScreen->setText("Top Scores: ------\n                ------\n                 ------\nYour Score:" + mb->scoreLabel->text());
+    mb->endScreen->setAlignment(Qt::AlignCenter);
     mb->playAgainBtn->show();
+    mb->easyBtn->setGeometry(340,200,90,50);
+    mb->easyBtn->show();
+    mb->mediumBtn->setGeometry(440,200,125,50);
+    mb->mediumBtn->show();
+    mb->hardBtn->setGeometry(575,200,90,50);
+    mb->hardBtn->show();
+    mb->loadBtn->setGeometry(435,350,183, 80);
+    mb->loadBtn->show();
 
     cCat->cat->hide();
     for(size_t i = 0; i < Obstacle::instance().obstacles.size(); i++){
@@ -601,21 +620,34 @@ void MainWindow::on_playAgainBtn_clicked(){
     gameModel->setScore(0);
     mb->gameOverLabel->hide();
     mb->playAgainBtn->hide();
-    mb->endScreen->hide();
-    //mb->quitBtn->hide();
-    //mb->saveBtn->hide();
-    //mb->resumeBtn->hide();
-    mb->logoLabel->show();
+    mb->loadBtn->hide();
+    mb->healthLabel->setText("Health: " + QString::number(cCat->health) +"%");
     mb->scoreLabel->setText("Score: " + QString::number(gameModel->getScore()));
+    mb->youLoseLbl->hide();
+    mb->endScreen->hide();
+    mb->saveBtn->hide();
+    mb->easyBtn->hide();
+    mb->mediumBtn->hide();
+    mb->hardBtn->hide();
+
+    Obstacle& o = Obstacle::instance();
+    for(unsigned int i = 0; i < o.spawnedObstacles.size(); i++){
+        delete o.spawnedObstacles[i];
+    }
+    o.spawnedObstacles.clear();
+
+    mb->logoLabel->show();
     mb->scoreLabel->show();
     mb->healthLabel->show();
+    mb->pauseBtn->show();
+    mb->cheatBtn->show();
     cCat->cat->show();
     backTimer->start();
     midTimer->start();
     frontTimer->start();
     cCat->catMovie->start();
-    mb->youLoseLbl->hide();
-    mb->startBtn->clicked();
+    spawningTimer->start();
+    mb->startBtn->click();
 }
 
 void MainWindow::on_resumeBtn_clicked(){
@@ -623,6 +655,7 @@ void MainWindow::on_resumeBtn_clicked(){
     mb->saveBtn->hide();
     mb->pauseBtn->show();
     mb->resumeBtn->hide();
+    mb->cheatBtn->show();
 
     obstacleTimer->start();
     spawningTimer->start();
@@ -635,20 +668,14 @@ void MainWindow::on_resumeBtn_clicked(){
 }
 
 void MainWindow::on_saveBtn_clicked(){
-        QFile data("data.txt");
-        if(data.open(QIODevice::ReadWrite | QFile::Truncate)){
-            QTextStream out(&data);
+    QFile data("data.txt");
+    if(data.open(QIODevice::ReadWrite | QFile::Truncate)){
+        QTextStream out(&data);
+        out << gameModel->getHealth() << "\n";
+        out << gameModel->getScore() << "\n";
+    }
 
-            out << Obstacle::instance().objects.size() << "\n";
-            out << gameModel->getHealth() << "\n";
-            out << gameModel->getScore() << "\n";
-
-            for(Object *obj : Obstacle::instance().objects) {
-                obj->saveGame(out);
-            }
-        }
-
-    mb->quitBtn->click();
+mb->quitBtn->click();
 }
 void MainWindow::on_cheatBtn_clicked(){
     if(cheating){
@@ -658,7 +685,7 @@ void MainWindow::on_cheatBtn_clicked(){
     }
 }
 
-void MainWindow::on_easyBtn_clicked()
+/*void MainWindow::on_easyBtn_clicked()
 {
     backTimer->stop();
     midTimer->stop();
@@ -709,4 +736,4 @@ void MainWindow::on_hardBtn_clicked()
     spawningTimer->setInterval(1000);
 
 
-}
+}*/

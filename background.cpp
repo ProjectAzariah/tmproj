@@ -59,7 +59,7 @@ MovingBackground::MovingBackground(QWidget *parent)
     QPixmap logo(":/logo.png");
     logoLabel = new QLabel(parent);
     logoLabel->setPixmap(logo);
-    logoLabel->setGeometry(100,0,200,30);
+    logoLabel->setGeometry(325,0,350,60);
     logoLabel->setScaledContents(true);
     logoLabel->show();
 
@@ -67,14 +67,20 @@ MovingBackground::MovingBackground(QWidget *parent)
     QPixmap logoTwo(":/gameover.png");
     gameOverLabel = new QLabel(parent);
     gameOverLabel->setPixmap(logoTwo);
-    gameOverLabel->setGeometry(100,0,210,50);
+    gameOverLabel->setGeometry(330,15,425,80);
     gameOverLabel->setScaledContents(true);
     gameOverLabel->hide();
 
     //score label
     scoreLabel = new QLabel(parent);
     scoreLabel->setText("Score: 0");
-    scoreLabel->setGeometry(310,0,80,30);
+
+    QFont toggleFont = scoreLabel->font();
+    toggleFont.setPointSize(16);
+    toggleFont.setBold(true);
+
+    scoreLabel->setFont(toggleFont);
+    scoreLabel->setGeometry(760,0,150,50);
     scoreLabel->setScaledContents(true);
     scoreLabel->hide();
 
@@ -82,18 +88,19 @@ MovingBackground::MovingBackground(QWidget *parent)
     //eventually change to number of hearts
     healthLabel = new QLabel(parent);
     healthLabel->setText("Health: 100%");
-    healthLabel->setGeometry(10,0,80,30);
+    healthLabel->setGeometry(100,0,150,50);
     healthLabel->setScaledContents(true);
+    healthLabel->setFont(toggleFont);
     healthLabel->hide();
 
     //makes intro box
     introLabel = new QTextEdit(parent);
     introLabel->setText("Corben the Curious Cat's curiousity has finally gotten the best of him and he has decided to go explore the dangerous outdoors. Help him avoid potential death by making him jump('W') to avoid the harmful dogs and lawnmowers and deadly holes and throw furballs('D') to defend himself before his health runs out. click START to begin!");
-    introLabel->setGeometry(0,30,400,150);
+    introLabel->setGeometry(120,60,800,160);
     //set font
     introLabel->setAlignment(Qt::AlignCenter);
     QFont font = introLabel->font();
-    font.setPointSize(12);
+    font.setPointSize(18);
     introLabel->setFont(font);
     introLabel->setDisabled(true);
     introLabel->show();
@@ -103,54 +110,23 @@ MovingBackground::MovingBackground(QWidget *parent)
     startBtn = new QPushButton(parent);    
     QIcon ButtonIcon(start);
     startBtn->setIcon(ButtonIcon);
-    startBtn->setGeometry(150,185,120, 50);
+    startBtn->setGeometry(370,270,120, 50);
     startBtn->setIconSize(start.rect().size());
     startBtn->show();
-
-    easyBtn = new QPushButton(parent);
-    easyBtn->setText("EASY");
-    easyBtn->setGeometry(150,300,120,50);
-    easyBtn->show();
-
-    mediumBtn = new QPushButton(parent);
-    mediumBtn->setText("MEDIUM");
-    mediumBtn->setGeometry(150,350,120,50);
-    mediumBtn->show();
-
-    hardBtn = new QPushButton(parent);
-    hardBtn->setText("HARD");
-    hardBtn->setGeometry(150,400,120,50);
-    hardBtn->show();
-
-    //makes load button
-    QPixmap load(":/load.png");
-    loadBtn = new QPushButton(parent);
-    QIcon ButtonSixIcon(load);
-    loadBtn->setIcon(ButtonSixIcon);
-    loadBtn->setGeometry(150,242,120, 50);
-    loadBtn->setIconSize(start.rect().size());
-    loadBtn->show();
 
     //makes pause button
     pauseBtn = new QPushButton(parent);
     pauseBtn->setText("&PAUSE");
-    pauseBtn->setGeometry(160,40,90, 30);
+    pauseBtn->setFont(toggleFont);
+    pauseBtn->setGeometry(390,75,90, 30);
     pauseBtn->hide();
 
     //makes cheat button
     cheatBtn = new QPushButton(parent);
     cheatBtn->setText("&CHEAT");
-    cheatBtn->setGeometry(160,100,90, 30);
+    cheatBtn->setFont(toggleFont);
+    cheatBtn->setGeometry(525,75,90, 30);
     cheatBtn->hide();
-
-    //makes resume button
-    QPixmap resume(":/resume.png");
-    resumeBtn = new QPushButton(parent);
-    QIcon ButtonFourIcon(resume);
-    resumeBtn->setIcon(ButtonFourIcon);
-    resumeBtn->setGeometry(5,115,110, 50);
-    resumeBtn->setIconSize(start.rect().size());
-    resumeBtn->hide();
 
 
     //makes save button
@@ -158,8 +134,8 @@ MovingBackground::MovingBackground(QWidget *parent)
     saveBtn = new QPushButton(parent);
     QIcon ButtonThreeIcon(save);
     saveBtn->setIcon(ButtonThreeIcon);
-    saveBtn->setGeometry(145,115,120, 50);
-    saveBtn->setIconSize(start.rect().size());
+    saveBtn->setGeometry(380,175,235, 80);
+    saveBtn->setIconSize(save.rect().size());
     saveBtn->hide();
 
 
@@ -169,23 +145,42 @@ MovingBackground::MovingBackground(QWidget *parent)
     quitBtn = new QPushButton(parent);
     QIcon ButtonFiveIcon(quit);
     quitBtn->setIcon(ButtonFiveIcon);
-    quitBtn->setGeometry(280,115,110, 50);
-    quitBtn->setIconSize(start.rect().size());
+    quitBtn->setGeometry(420,275,155, 80);
+    quitBtn->setIconSize(quit.rect().size());
     quitBtn->hide();
+
+    //makes resume button
+    QPixmap resume(":/resume.png");
+    resumeBtn = new QPushButton(parent);
+    QIcon ButtonFourIcon(resume);
+    resumeBtn->setIcon(ButtonFourIcon);
+    resumeBtn->setGeometry(420,75,155, 80);
+    resumeBtn->setIconSize(quit.rect().size());
+    resumeBtn->hide();
 
     //makes endScreen
     endScreen = new QTextEdit(parent);
-    endScreen->setGeometry(80,60,240,150);
+    endScreen->setGeometry(225,100,600,350);
     endScreen->setDisabled(true);
+    endScreen->setFont(toggleFont);
     endScreen->hide();
+
+    //makes load button
+    QPixmap load(":/load.png");
+    loadBtn = new QPushButton(parent);
+    QIcon ButtonSixIcon(load);
+    loadBtn->setIcon(ButtonSixIcon);
+    loadBtn->setGeometry(510,270,120, 50);
+    loadBtn->setIconSize(load.rect().size());
+    loadBtn->show();
 
     //play again button
     QPixmap playAgain(":/playagain.png");
     playAgainBtn = new QPushButton(parent);
     QIcon ButtonTwoIcon(playAgain);
     playAgainBtn->setIcon(ButtonTwoIcon);
-    playAgainBtn->setGeometry(130,150,150, 45);
-    playAgainBtn->setIconSize(start.rect().size());
+    playAgainBtn->setGeometry(435,250,183, 80);
+    playAgainBtn->setIconSize(playAgain.rect().size());
     playAgainBtn->hide();
 
     youLoseLbl = new QLabel(parent);
@@ -193,4 +188,25 @@ MovingBackground::MovingBackground(QWidget *parent)
     youLoseLbl->showFullScreen();
     youLoseLbl->setScaledContents(true);
     youLoseLbl->hide();
+
+    //Difficulty Toggles
+
+    easyBtn = new QRadioButton(parent);
+    easyBtn->setText("EASY");
+    easyBtn->setGeometry(330,210,90,50);
+    easyBtn->setFont(toggleFont);
+    easyBtn->toggle();
+    easyBtn->show();
+
+    mediumBtn = new QRadioButton(parent);
+    mediumBtn->setText("MEDIUM");
+    mediumBtn->setGeometry(430,210,125,50);
+    mediumBtn->setFont(toggleFont);
+    mediumBtn->show();
+
+    hardBtn = new QRadioButton(parent);
+    hardBtn->setText("HARD");
+    hardBtn->setGeometry(565,210,90,50);
+    hardBtn->setFont(toggleFont);
+    hardBtn->show();
 }

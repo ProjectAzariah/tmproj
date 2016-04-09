@@ -7,6 +7,7 @@
 #include <QTextStream>
 #include <QTextEdit>
 #include <QPushButton>
+#include <QRadioButton>
 
 #include "mainwindow.h"
 #include "object.h"
@@ -30,9 +31,9 @@ public:
     QPushButton* cheatBtn;
     QPushButton * startBtn;
     QPushButton * loadBtn;
-    QPushButton * easyBtn;
-    QPushButton * mediumBtn;
-    QPushButton * hardBtn;
+    QRadioButton * easyBtn;
+    QRadioButton * mediumBtn;
+    QRadioButton * hardBtn;
     QLabel* scoreLabel;
     QLabel* healthLabel;
     QPushButton * saveBtn;
