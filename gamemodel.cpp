@@ -1,4 +1,5 @@
 #include "gamemodel.h"
+
 #include <algorithm>
 #include <vector>
 #include <QFile>
@@ -6,8 +7,6 @@
 #include <iostream>
 
 using namespace std;
-
-
 
 GameModel* GameModel::gameModel = nullptr;
 
@@ -26,15 +25,6 @@ QString GameModel::Print(){
         QString text;
         QString num;
 
-        if (playerScore.size()>=3){
-        for(size_t i = 0; i < 3; i++) {
-            num ="";
-            text += num.number((i + 1), 10);
-            text += ": ";
-            text += num.number(playerScore.at(i), 10);
-            text += "\n";
-        }
-        }else{
             int size = playerScore.size();
             int blanks = 3-size;
             size_t i =0;
@@ -51,7 +41,6 @@ QString GameModel::Print(){
                 text += "\n";
                 i++;
             }
-        }
         return text;
 }
 

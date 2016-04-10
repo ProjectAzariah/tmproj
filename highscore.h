@@ -7,13 +7,12 @@
 #include <vector>
 #include <string>
 
-
-
 using namespace std;
 
 class HighScore {
 
 private:
+
     vector<int> playerScore;
 
 public:
@@ -30,6 +29,9 @@ public:
     //void loadFromFile();
 
     //void add();
+
+    QString Print();
+
 };
 
 #endif // HIGHSCORE_H
