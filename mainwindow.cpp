@@ -189,6 +189,8 @@ void MainWindow::on_startBtn_clicked(){
     mb->pauseBtn->show();
     mb->cheatBtn->show();
 
+
+
     backTimer->stop();
     midTimer->stop();
     frontTimer->stop();
@@ -589,8 +591,6 @@ void MainWindow::on_playAgainBtn_clicked(){
     cCat->catMovie->start();
     obstacleTimer->start();
     spawningTimer->start();
-
-    on_startBtn_clicked();
 }
 
 void MainWindow::on_resumeBtn_clicked(){
