@@ -215,8 +215,10 @@ void MainWindow::on_startBtn_clicked(){
         backTimer->setInterval(30);
         midTimer->setInterval(5);
         frontTimer->setInterval(3);
-        obstacleTimer->setInterval(.5);
-        spawningTimer->setInterval(1000);
+        //obstacleTimer->setInterval(.5);
+        //spawningTimer->setInterval(1000);
+        obstacleTimer->setInterval(.8);
+        spawningTimer->setInterval(1800);
     }
 
     backTimer->start();
@@ -239,10 +241,12 @@ void MainWindow:: on_loadBtn_clicked(){
     o.objects.clear();
     o.spawnedObstacles.clear();
 
+    mb->logoLabel->show();
     mb->endScreen->hide();
     mb->playAgainBtn->hide();
     mb->saveBtn->hide();
     mb->gameOverLabel->hide();
+    cCat->catMovie->start();
     cCat->cat->show();
 
     MainWindow::on_startBtn_clicked();
@@ -265,20 +269,12 @@ void MainWindow:: on_pauseBtn_clicked(){
     mb->pauseBtn->hide();
     mb->cheatBtn->hide();
     mb->resumeBtn->show();
-
+    furTimer->stop();
     obstacleTimer->stop();
     spawningTimer->stop();
     backTimer->stop();
     midTimer->stop();
     frontTimer->stop();
-    //furtime->stop();
-    //cCat->catMovie->stop();
-    /*for(int i = 0; i < Obstacle::instance().obstacles.size(); i++){
-        QLabel * ob = Obstacle::instance().obstacles[i];
-        if(!(ob->movie())){
-            ob->movie()->stop();
-        }
-    }*/
 }
 
 void MainWindow::obstacleTimerHit()
@@ -300,10 +296,8 @@ void MainWindow::obstacleTimerHit()
                 QLabel * s = cCat->catSensors.at(j);
                 if (obst->geometry().intersects(s->geometry()) && !obj->isCollided)
                 {
-                    //std::cout<<"Cat Health: "<<gameModel->getHealth()<<", Enemy HIP: " <<hip<<endl;
                     hurtTimer->start();
                     gameModel->Hurt(hip);
-                    //std::cout<<"Cat's new Health: "<< gameModel->getHealth()<<endl;
                     mb->healthLabel->setText("Health: " + QString::number(gameModel->getHealth()) +"%");
                     obj->isCollided=true;
 
@@ -359,13 +353,10 @@ void MainWindow::hurtTimerHit()
 void MainWindow::spawningTimerHit()
 {
     Obstacle& o = Obstacle::instance();
-
-    //enemyExists = true;
     QLabel * obst = new QLabel(this);
     obst = o.spawnObstacles(this);
     obst->show();
     obstacleTimer->start();
-    //label->move(0, label->y());
     this->obstacleTimerHit();
 
     if (started){
@@ -450,12 +441,6 @@ void MainWindow::keyPressEvent(QKeyEvent* event) {
         }
 
         jumpTimer->start();
-
-        //cCat->cat->move(cCat->cat->x(), cCat->cat->y() - 76);
-        //cCat->catMovie->stop();
-
-
-
         break;
     case 68:
         if (furBalls.size() < 2)
@@ -474,53 +459,43 @@ void MainWindow::keyPressEvent(QKeyEvent* event) {
 
         break;
     }
-
-
-
-
-
 }
 
 void MainWindow::furTimerHit()
 {
     Obstacle& o = Obstacle::instance();
 
-    for (unsigned int i = 0 ; i < furBalls.size(); i++)
-    {
-        std::cout<<"looking at furball "<<i<<" to see if it hit anyone . . . .\n";
-        QLabel * ball = furBalls[i];
-        ball->move(ball->x() + 2,ball->y());
-        for (unsigned int j = 0; j < o.spawnedObstacles.size(); j++)
-            {
-                std::cout<<" looking at enemy "<< j << " to see if furrball "<<i<<" destroyed it . . . .\n";
-                QLabel * badGuy = new QLabel;
-                badGuy = o.spawnedObstacles[i];
-                if (/*enemyExists &&*/ ball->geometry().intersects(badGuy->geometry()))
+        for (unsigned int i = 0 ; i < furBalls.size(); i++)
+        {
+            QLabel * ball = furBalls[i];
+            ball->move(ball->x() + 2,ball->y());
+            for (unsigned int j = 0; j < o.spawnedObstacles.size(); j++)
                 {
-                    //delete ball;
-                    delete badGuy;
-                    std::cout<<"     furball "<<i<<" got enemy "<<j<<endl;
-                    o.spawnedObstacles.erase(o.spawnedObstacles.cbegin());
-                    furBalls.erase(furBalls.cbegin());
-                    //ball = new QLabel(this);
-                    badGuy = new QLabel(this);
-                    delete ball;
-                    ball = new QLabel(this);
+                    QLabel * badGuy = o.spawnedObstacles[i];
+                    if (ball->geometry().intersects(badGuy->geometry()))
+                    {
+                        delete badGuy;
+                        o.spawnedObstacles.erase(o.spawnedObstacles.cbegin());
+                        furBalls.erase(furBalls.cbegin());
+                        badGuy = new QLabel(this);
+                        delete ball;
+                        ball = new QLabel(this);
+
+                    }
+                    else{if (badGuy->x() < -75)
+                    {
+                        delete badGuy;
+                        o.spawnedObstacles.erase(o.spawnedObstacles.cbegin());
+                        badGuy = new QLabel(this);
+                    }
+                    if (ball->x() > this->width())
+                    {
+                        delete ball;
+                        furBalls.erase(furBalls.cbegin());
+                        ball = new QLabel(this);
+                    }}
                 }
-                if (/*enemyExists && */badGuy->x() < -75)
-                {
-                    delete badGuy;
-                    o.spawnedObstacles.erase(o.spawnedObstacles.cbegin());
-                    badGuy = new QLabel(this);
-                }
-                if (ball->x() > this->width())
-                {
-                    delete ball;
-                    furBalls.erase(furBalls.cbegin());
-                    ball = new QLabel(this);
-                }
-            }
-    }
+        }
 }
 
 void MainWindow::on_quitBtn_clicked(){
@@ -550,6 +525,9 @@ void MainWindow::on_quitBtn_clicked(){
     for(size_t i = 0; i < Obstacle::instance().spawnedObstacles.size(); i++){
         Obstacle::instance().spawnedObstacles[i]->hide();
     }
+    for(size_t i=0; i < furBalls.size(); i++){
+        furBalls[i]->hide();
+    }
 
 }
 
@@ -568,6 +546,11 @@ void MainWindow::on_playAgainBtn_clicked(){
     mb->mediumBtn->hide();
     mb->hardBtn->hide();
 
+    for(unsigned int i = 0; i < furBalls.size();i++){
+        delete furBalls[i];
+    }
+    furBalls.clear();
+
     Obstacle& o = Obstacle::instance();
     for(unsigned int i = 0; i < o.spawnedObstacles.size(); i++){
         delete o.spawnedObstacles[i];
@@ -585,12 +568,8 @@ void MainWindow::on_playAgainBtn_clicked(){
     mb->pauseBtn->show();
     mb->cheatBtn->show();
     cCat->cat->show();
-    backTimer->start();
-    midTimer->start();
-    frontTimer->start();
     cCat->catMovie->start();
-    obstacleTimer->start();
-    spawningTimer->start();
+    on_startBtn_clicked();
 }
 
 void MainWindow::on_resumeBtn_clicked(){
@@ -607,7 +586,7 @@ void MainWindow::on_resumeBtn_clicked(){
     frontTimer->start();
     obstacleTimer->start();
     spawningTimer->start();
-    //furtime->start();
+    furTimer->start();
 }
 
 void MainWindow::on_saveBtn_clicked(){
@@ -629,56 +608,3 @@ void MainWindow::on_cheatBtn_clicked(){
         cheating = true;
     }
 }
-
-/*void MainWindow::on_easyBtn_clicked()
-{
-    backTimer->stop();
-    midTimer->stop();
-    frontTimer->stop();
-    backTimer->setInterval(70);
-    midTimer->setInterval(40);
-    frontTimer->setInterval(10);
-    backTimer->start();
-    midTimer->start();
-    frontTimer->start();
-
-    obstacleTimer->setInterval(2);
-    spawningTimer->setInterval(4000);
-
-}
-
-void MainWindow::on_mediumBtn_clicked()
-{
-    backTimer->stop();
-    midTimer->stop();
-    frontTimer->stop();
-    backTimer->setInterval(50);
-    midTimer->setInterval(20);
-    frontTimer->setInterval(5);
-    backTimer->start();
-    midTimer->start();
-    frontTimer->start();
-
-    obstacleTimer->setInterval(1);
-    spawningTimer->setInterval(2000);
-
-
-}
-
-void MainWindow::on_hardBtn_clicked()
-{
-    backTimer->stop();
-    midTimer->stop();
-    frontTimer->stop();
-    backTimer->setInterval(30);
-    midTimer->setInterval(10);
-    frontTimer->setInterval(3);
-    backTimer->start();
-    midTimer->start();
-    frontTimer->start();
-
-    obstacleTimer->setInterval(.5);
-    spawningTimer->setInterval(1000);
-
-
-}*/

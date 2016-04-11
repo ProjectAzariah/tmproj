@@ -17,32 +17,20 @@ protected:
     int healthimpact;
     std::string type;
     bool isActive();
-    //bool isDog = false;
-    //bool isMower = false;
-    //bool isHole = false;
-
-    //QLabel * label;
-
 public:
-    bool isCollided;
-    int getX()
-    {return x;}
-    void setX(int newX) {x = newX;}
-    int getY()
-    {return y;}
-    void setY(int newY) {y = newY;}
-    int getW()
-    {return w;}
-    void setW(int newW) {w = newW;}
-    int getH()
-    {return h;}
-    void setH(int newH) {h = newH;}
-    std::string getType()
-    {return type;}
-    void setType(std::string newType) {type = newType;}
     void setHealthImpact(int h){healthimpact = h;}
+    bool isCollided;
+    int getX() {return x;}
+    void setX(int newX) {x = newX;}
+    int getY() {return y;}
+    void setY(int newY) {y = newY;}
+    int getW() {return w;}
+    void setW(int newW) {w = newW;}
+    int getH() {return h;}
+    void setH(int newH) {h = newH;}
+    std::string getType() {return type;}
+    void setType(std::string newType) {type = newType;}
     int getHealthImpact(){return healthimpact;}
-
     virtual void saveGame(QTextStream &out) { }
     void loadGame(QFile &file);
 

@@ -33,17 +33,12 @@ CuriousCat::CuriousCat(QWidget *parent)
     setW(192);
     setH(192);
     setType("CuriousCat");
-    //jumpSpeed = 100;
-    //gravity = 0;
     height = 0;
     speed = 200;
     isClimbing = false;
     isFalling = false;
     isLanded = true;
     counter = 0;
-
-
-
 
     catMovie = new QMovie(":/cat.gif");
     cat = new QLabel(parent);
@@ -67,14 +62,10 @@ CuriousCat::CuriousCat(QWidget *parent)
     QLabel * backPawSensor = new QLabel(parent);
     backPawSensor->setGeometry(frontPawX - 75, frontPawY, sensorW, sensorH);
     catSensors.push_back(backPawSensor);
-
-
-
 }
 
-//saves a dog
+//saves a cat
 void CuriousCat::saveGame(QTextStream &out) {
-
 }
 
 MadDog::MadDog()
@@ -86,9 +77,7 @@ MadDog::MadDog()
     setType("MadDog");
     setHealthImpact(50);
     isCollided = false;
-
 }
-
 
 //saves a dog
 void MadDog::saveGame(QTextStream &out) {
@@ -98,18 +87,15 @@ void MadDog::saveGame(QTextStream &out) {
         out << this->y << "\n";
 }
 
-
-
-
 LawnMower::LawnMower()
 {
     setX(350);
-    setY(198);
-    setW(50);
-    setH(50);
-    setType("LawnMower");
-    setHealthImpact(25);
-    isCollided = false;
+        setY(198);
+        setW(50);
+        setH(50);
+        setType("LawnMower");
+        setHealthImpact(25);
+        isCollided = false;
 }
 
 //saves a lawnmower
@@ -119,21 +105,20 @@ void LawnMower::saveGame(QTextStream &out) {
         out << this->y << "\n";
 }
 
-
-    //saves a hole
-    void Hole::saveGame(QTextStream &out) {
-            out << "Hole" << "\n";
-            out << this->x << "\n";
-            out << this->y << "\n";
-    }
+//saves a hole
+void Hole::saveGame(QTextStream &out) {
+        out << "Hole" << "\n";
+        out << this->x << "\n";
+        out << this->y << "\n";
+}
 
 Hole::Hole()
 {
     setX(150);
-    setY(208);
-    setW(75);
-    setH(300);
-    setType("Hole");
-    setHealthImpact(100);
-    isCollided = false;
+        setY(208);
+        setW(75);
+        setH(300);
+        setType("Hole");
+        setHealthImpact(100);
+        isCollided = false;
 }

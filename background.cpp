@@ -6,9 +6,6 @@
 
 MovingBackground::MovingBackground(QWidget *parent)
 {
-    //QVBoxLayout *layout = new QVBoxLayout;
-        //layout->addWidget(formWidget);
-        //setLayout(layout);
 
     //this creates the back-most picture for the background
     QPixmap background(":/Sky_back_layer.png");
