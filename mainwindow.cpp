@@ -488,13 +488,14 @@ void MainWindow::furTimerHit()
                         o.spawnedObstacles.erase(o.spawnedObstacles.cbegin());
                         badGuy = new QLabel(this);
                     }
-                    if (ball->x() > this->width())
-                    {
-                        delete ball;
-                        furBalls.erase(furBalls.cbegin());
-                        ball = new QLabel(this);
-                    }}
+                    }
                 }
+            if (ball->x() > this->width())
+            {
+                delete ball;
+                furBalls.erase(furBalls.cbegin());
+                ball = new QLabel(this);
+            }
         }
 }
 
